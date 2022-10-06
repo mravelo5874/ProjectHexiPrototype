@@ -5,23 +5,25 @@ using TMPro;
 
 public class CardUI : MonoBehaviour
 {   
+    //// STATIC VARIABLES ////
     public static float CARD_DRAW_SPEED = 0.1f;
+    public static float CARD_MOVE_SPEED = 0.2f;
     public static float MAX_CARD_ANGLE = 30f;
-    public static float CARD_Y_MULTIPLIER = -50f;
+    public static float CARD_Y_MULTIPLIER = -100f;
     public static float SELECTED_CARD_OFFSET = 200f;
     public static float DEFAULT_HAND_POS_WIDTH = 50f;
     public static float SELECTED_WIDTH_MULTIPLIER = 4f;
-    
-
 
     // UI components
     [Header("Hand")]
     public Transform card_parent;
     public GameObject card_prefab;
     public List<GameObject> hand_positions;
+    
     private List<CardObject> card_objects;
     private CardObject selected_card = null;
     private int prev_selected_card_index = 0;
+    private bool follow_player = false;
     
     [Header("Draw Pile")]
     public MyObject draw_icon;
@@ -46,6 +48,15 @@ public class CardUI : MonoBehaviour
         }
     }
 
+    void FixedUpdate()
+    {
+        // if card is selected and following player, move card to mouse pos
+        if ((selected_card && follow_player))
+        {
+            selected_card.transform.position = Vector2.Lerp(selected_card.transform.position, Input.mousePosition, CARD_MOVE_SPEED);
+        }
+    }
+
     public void UpdateVisuals()
     {
         StartCoroutine(UpdateVisualsRoutine());
@@ -58,6 +69,11 @@ public class CardUI : MonoBehaviour
         // set correct texts
         draw_text.text = CardManager.instance.GetDrawPile().Count.ToString();
         discard_text.text = CardManager.instance.GetDiscardPile().Count.ToString();
+        // return (yield break) if card is following player
+        if (follow_player)
+        {
+            yield break;
+        }
         // set card positions and rotations
         int i = 0;
         foreach (CardObject card in card_objects)
@@ -80,6 +96,7 @@ public class CardUI : MonoBehaviour
         // determine if card is selected
         if (selected_card == card_objects[index])
         {
+            // else return selected card offset
             return new Vector3(hand_pos.x, hand_pos.y + SELECTED_CARD_OFFSET, hand_pos.z);
         }
         // return hand_pos iff 1 card in hand
@@ -175,6 +192,39 @@ public class CardUI : MonoBehaviour
             selected_card = null;
             UpdateVisuals();
         }   
+    }
+
+    public void DetermineSelectCard(CardObject card)
+    {
+        // if have a card selected and hovered over a new card without letting go of screen, select new card
+        if (selected_card)
+        {
+            // stop following player + unselect card
+            CardStopFollowPlayer();
+            SetSelectedCard(card);
+        }
+    }
+
+    public void CardFollowPlayer()
+    {
+        // if card not following player, start following
+        if (!follow_player && selected_card)
+        {
+            selected_card.myObject.ChangeScale(0.5f, 0.1f);
+            follow_player = true;
+        }
+    }
+
+    public void CardStopFollowPlayer()
+    {
+        // if card following player, stop following
+        if (follow_player)
+        {
+            selected_card.myObject.ChangeScale(1f, 0.1f);
+            follow_player = false;
+        }
+        // unselect card
+        UnselectCard();
     }
 
     public void DiscardCardFromDrawPile(Card card)

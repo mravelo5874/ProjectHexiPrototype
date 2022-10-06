@@ -3,10 +3,11 @@ using UnityEngine;
 using TMPro;
 
 public class CardObject : MonoBehaviour
-    , IPointerClickHandler
+    , IPointerDownHandler
+    , IPointerUpHandler
+    , IPointerExitHandler
     , IDragHandler
     , IPointerEnterHandler
-    , IPointerExitHandler
 {   
     public MyObject myObject;
     private Card myCard;
@@ -24,23 +25,28 @@ public class CardObject : MonoBehaviour
         card_description_text.text = myCard.card_description.ToString();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
         CardManager.instance.card_UI.SetSelectedCard(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        print("I'm being dragged!");
+        CardManager.instance.card_UI.CardFollowPlayer();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
-
+        CardManager.instance.card_UI.CardStopFollowPlayer();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        CardManager.instance.card_UI.UnselectCard();
+        // CardManager.instance.card_UI.UnselectCard();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        // CardManager.instance.card_UI.DetermineSelectCard(this);
     }
 }
