@@ -25,6 +25,16 @@ public class CardObject : MonoBehaviour
         card_description_text.text = myCard.card_description.ToString();
     }
 
+    public Card GetCardData()
+    {
+        return myCard;
+    }
+
+    public void PlayCard()
+    {
+        // TODO: play card stuff idk
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         CardManager.instance.card_UI.SetSelectedCard(this);
@@ -37,7 +47,7 @@ public class CardObject : MonoBehaviour
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        CardManager.instance.card_UI.CardStopFollowPlayer();
+        CardManager.instance.card_UI.AttemptPlayCard();
     }
 
     public void OnPointerExit(PointerEventData eventData)

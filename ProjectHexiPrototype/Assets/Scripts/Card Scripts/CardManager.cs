@@ -109,9 +109,6 @@ public class CardManager : MonoBehaviour
         // remove card from hand and add to discard pile
         hand.Remove(discarded_card);
         discard_pile.Add(discarded_card);
-
-        // update card UI
-        card_UI.UpdateVisuals();
     }
     
     // place all cards in discard pile into draw pile

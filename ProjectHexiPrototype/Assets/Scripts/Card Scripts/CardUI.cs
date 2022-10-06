@@ -10,7 +10,7 @@ public class CardUI : MonoBehaviour
     public static float CARD_MOVE_SPEED = 0.2f;
     public static float MAX_CARD_ANGLE = 30f;
     public static float CARD_Y_MULTIPLIER = -100f;
-    public static float SELECTED_CARD_OFFSET = 200f;
+    public static float SELECTED_CARD_OFFSET = 100f;
     public static float DEFAULT_HAND_POS_WIDTH = 50f;
     public static float SELECTED_WIDTH_MULTIPLIER = 4f;
 
@@ -200,7 +200,7 @@ public class CardUI : MonoBehaviour
         if (selected_card)
         {
             // stop following player + unselect card
-            CardStopFollowPlayer();
+            UnfollowCard();
             SetSelectedCard(card);
         }
     }
@@ -212,10 +212,12 @@ public class CardUI : MonoBehaviour
         {
             selected_card.myObject.ChangeScale(0.5f, 0.1f);
             follow_player = true;
+
+            // TODO: highlight where player needs to play card (Enemies, Player, Environment)
         }
     }
 
-    public void CardStopFollowPlayer()
+    public void UnfollowCard()
     {
         // if card following player, stop following
         if (follow_player)
@@ -225,6 +227,54 @@ public class CardUI : MonoBehaviour
         }
         // unselect card
         UnselectCard();
+    }
+
+    public void AttemptPlayCard()
+    {   
+        // TODO: play card depending on card type
+        bool play_card = false;
+        // send raycast at mouse position to check for enemies / player
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            if (hit.transform.tag == "Enemy" || hit.transform.tag == "Player")
+            {
+                play_card = true;
+            }
+        }
+
+        if (play_card)
+        {
+            StartCoroutine(PlayCardRoutine(selected_card));
+        }
+        else
+        {
+            UnfollowCard();
+        }   
+    }
+
+    private IEnumerator PlayCardRoutine(CardObject card)
+    {
+        // unselect + unfollow card and play
+        follow_player = false;
+        selected_card = null;
+        hand_positions[prev_selected_card_index].GetComponent<MyObject>().SetRectTransformWidth(DEFAULT_HAND_POS_WIDTH);
+        card.PlayCard();
+        card.myObject.SquishyChangeScale(0.3f, 0.5f, 0.1f, 0.1f);
+        yield return new WaitForSeconds(0.2f);
+        CardManager.instance.DiscardCard(card.GetCardData());
+        // move card to discard pile
+        card.myObject.MoveToTransform(discard_icon.transform, CARD_DRAW_SPEED, true, false);
+        card.myObject.ChangeScale(0f, CARD_DRAW_SPEED);
+        yield return new WaitForSeconds(CARD_DRAW_SPEED);
+        // remove card object from list
+        hand_positions[card_objects.Count - 1].SetActive(false);
+        card_objects.Remove(card);
+        Destroy(card.gameObject);
+        discard_icon.SquishyChangeScale(0.8f, 1f, 0.1f, 0.1f);
+        // update visuals
+        UpdateVisuals();
     }
 
     public void DiscardCardFromDrawPile(Card card)
