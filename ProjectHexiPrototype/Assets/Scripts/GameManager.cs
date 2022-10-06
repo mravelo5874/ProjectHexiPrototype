@@ -14,5 +14,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // TODO: move this somewhere else - not here
     public List<Card> default_knight_deck;
+
+    public bool allow_player_input = false;
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card_name: Slash!
   energy_cost: 1
-  deal_damage: 1
-  damage_amount: 6
-  gain_block: 0
-  block_amount: 0
+  card_description: Deal 6 damage.
+  modifiers:
+  - modifier: 1
+    amount: 6

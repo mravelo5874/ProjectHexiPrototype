@@ -151,6 +151,17 @@ public class MyObject : MonoBehaviour
         image.color = newColor;
     }
 
+    public void SetRectTransformWidth(float width)
+    {
+        // get rect transform component
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        if (rectTransform)
+        {
+            Vector2 prevSizeDelta = rectTransform.sizeDelta;
+            rectTransform.sizeDelta = new Vector2(width, prevSizeDelta.y);
+        }
+    }
+
     public void WiggleObjectOnce()
     {
         continuousWiggleObject = false;
@@ -402,6 +413,15 @@ public class MyObject : MonoBehaviour
     {
         float startRotation = transform.localRotation.eulerAngles.z;
         float timer = 0f;
+
+        float targetPlus360 = targetAngle + 360f;
+        float targetMinus360 = targetAngle - 360f;
+
+        // determine if there is a faster way to target angle
+        if (Mathf.Abs(targetPlus360 - startRotation) < Mathf.Abs(targetAngle - startRotation))
+            targetAngle = targetPlus360;
+        if (Mathf.Abs(targetMinus360 - startRotation) < Mathf.Abs(targetAngle - startRotation))
+            targetAngle = targetMinus360;
 
         while (true)
         {
