@@ -24,6 +24,10 @@ public class CardUI : MonoBehaviour
     private CardObject selected_card = null;
     private int prev_selected_card_index = 0;
     private bool follow_player = false;
+
+    [Header("Energy")]
+    public List<MyObject> energy_icons;
+    private int prev_energy_amount = 0;
     
     [Header("Draw Pile")]
     public MyObject draw_icon;
@@ -46,6 +50,12 @@ public class CardUI : MonoBehaviour
         {
             pos.SetActive(false);
         }
+        // disable energy icons
+        foreach (MyObject icon in energy_icons)
+        {
+            icon.gameObject.SetActive(false);
+        }
+        prev_energy_amount = 0;
     }
 
     void FixedUpdate()
@@ -55,6 +65,22 @@ public class CardUI : MonoBehaviour
         {
             selected_card.transform.position = Vector2.Lerp(selected_card.transform.position, Input.mousePosition, CARD_MOVE_SPEED);
         }
+    }
+
+    public void SetMaxEnergy(int max_energy)
+    {
+        // disable energy icons
+        foreach (MyObject icon in energy_icons)
+        {
+            icon.gameObject.SetActive(false);
+        }
+        // enable max energy icons
+        for (int i = 0; i < max_energy; i++)
+        {
+            energy_icons[i].gameObject.SetActive(true);
+            energy_icons[i].transform.localScale = Vector3.zero;
+        }
+        prev_energy_amount = 0;
     }
 
     public void UpdateVisuals()
@@ -87,6 +113,29 @@ public class CardUI : MonoBehaviour
         {
             selected_card.transform.SetAsLastSibling();
         }
+
+        // set energy indicator icons
+        int new_energy_amount = CardManager.instance.GetCurrentEnergy();
+        // remove energy icons
+        if (new_energy_amount < prev_energy_amount)
+        {
+            for (int x = prev_energy_amount - 1; x > new_energy_amount - 1; x--)
+            {
+                energy_icons[x].SquishyChangeScale(1.1f, 0f, 0.1f, 0.1f);
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
+        // add energy icons
+        if (new_energy_amount > prev_energy_amount)
+        {
+            for (int x = prev_energy_amount; x < new_energy_amount; x++)
+            {
+                energy_icons[x].SquishyChangeScale(1.1f, 1f, 0.1f, 0.1f);
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
+        // set new energy amount
+        prev_energy_amount = new_energy_amount;
     }
 
     private Vector3 CalculateCardPos(int index)
@@ -229,29 +278,9 @@ public class CardUI : MonoBehaviour
         UnselectCard();
     }
 
-    public void AttemptPlayCard()
-    {   
-        // TODO: play card depending on card type
-        bool play_card = false;
-        // send raycast at mouse position to check for enemies / player
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100))
-        {
-            if (hit.transform.tag == "Enemy" || hit.transform.tag == "Player")
-            {
-                play_card = true;
-            }
-        }
-
-        if (play_card)
-        {
-            StartCoroutine(PlayCardRoutine(selected_card));
-        }
-        else
-        {
-            UnfollowCard();
-        }   
+    public void PlayCard(CardObject card)
+    {
+        StartCoroutine(PlayCardRoutine(card));
     }
 
     private IEnumerator PlayCardRoutine(CardObject card)

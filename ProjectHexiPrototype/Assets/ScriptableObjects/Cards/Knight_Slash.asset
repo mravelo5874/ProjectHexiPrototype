@@ -15,6 +15,7 @@ MonoBehaviour:
   card_name: Slash!
   energy_cost: 1
   card_description: Deal 6 damage.
+  card_target: 1
   modifiers:
   - modifier: 1
     amount: 6
