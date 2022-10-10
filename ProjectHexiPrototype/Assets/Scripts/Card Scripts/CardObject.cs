@@ -10,13 +10,13 @@ public class CardObject : MonoBehaviour
     , IPointerEnterHandler
 {   
     public MyObject myObject;
-    private Card myCard;
+    private CardData myCard;
 
     public TextMeshProUGUI cost_text;
     public TextMeshProUGUI card_name_text;
     public TextMeshProUGUI card_description_text;
 
-    public void SetCard(Card card)
+    public void SetCard(CardData card)
     {
         myCard = card;
         // set card UI
@@ -25,7 +25,7 @@ public class CardObject : MonoBehaviour
         card_description_text.text = myCard.card_description.ToString();
     }
 
-    public Card GetCardData()
+    public CardData GetCardData()
     {
         return myCard;
     }

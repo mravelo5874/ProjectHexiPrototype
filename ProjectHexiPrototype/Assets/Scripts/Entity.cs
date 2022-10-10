@@ -4,24 +4,38 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    private int health = 0;
-    private int max_health = 50;
+    private int current_health = 0;
+    private int max_health = 18;
     private int block = 0;
 
     public HealthBar health_bar;
 
     void Start()
     {
+        // set health
+        current_health = max_health;
         health_bar.ShowBar();
+        UpdateEntity();
+    }
+
+    public virtual void SetMaxHealth(int new_max_health, bool update_current_health = true)
+    {
+        max_health = new_max_health;
+        if (update_current_health)
+        {
+            // set current health
+            current_health = max_health;
+        }
+        UpdateEntity();
     }
 
     public void Heal(int amount)
     {
-        health += amount;
+        current_health += amount;
         // do not exceed max health
-        if (health > max_health)
+        if (current_health > max_health)
         {
-            health = max_health;
+            current_health = max_health;
         }
         
         // update entity
@@ -44,11 +58,11 @@ public class Entity : MonoBehaviour
         // deal damage to heath
         if (amount > 0)
         {   
-            health -= amount;
+            current_health -= amount;
             // death if health is 0
-            if (health < 0)
+            if (current_health <= 0)
             {
-                health = 0;
+                current_health = 0;
                 Death();
             }
         }
@@ -64,12 +78,12 @@ public class Entity : MonoBehaviour
 
     private void UpdateEntity()
     {
-        health_bar.UpdateBar((float)health / (float)max_health);
+        health_bar.UpdateBar(current_health, max_health);
     }
 
     private void Death()
     {
-        // TODO
+        EnemyManager.instance.DeleteEnemy(this);
     }
     
 }

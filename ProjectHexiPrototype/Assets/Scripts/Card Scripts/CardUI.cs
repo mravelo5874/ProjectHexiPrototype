@@ -200,7 +200,7 @@ public class CardUI : MonoBehaviour
         }
     }
 
-    public void AddCardToHand(Card card)
+    public void AddCardToHand(CardData card)
     {
         draw_icon.SquishyChangeScale(0.8f, 1f, 0.1f, 0.1f);
         // instantiate new card with 0 scale
@@ -300,7 +300,7 @@ public class CardUI : MonoBehaviour
         UpdateVisuals();
     }
 
-    public void DiscardCardFromDrawPile(Card card)
+    public void DiscardCardFromDrawPile(CardData card)
     {
         // TODO: do this
     }

@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Card")]
-public class Card : ScriptableObject
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/CardData")]
+public class CardData : ScriptableObject
 {
     public string card_name;
     public int energy_cost;

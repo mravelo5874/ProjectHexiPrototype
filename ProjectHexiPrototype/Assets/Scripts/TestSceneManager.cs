@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TestSceneManager : MonoBehaviour
 {
+    public EnemyData skeleton_enemy_data;
+
     void Start()
     {
         ResetScene();
@@ -30,6 +32,6 @@ public class TestSceneManager : MonoBehaviour
 
     public void SpawnEnemy()
     {
-        EnemyManager.instance.SpawnEnemy();
+        EnemyManager.instance.SpawnEnemy(skeleton_enemy_data);
     }
 }

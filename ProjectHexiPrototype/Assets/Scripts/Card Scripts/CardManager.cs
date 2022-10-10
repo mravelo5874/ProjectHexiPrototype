@@ -18,26 +18,26 @@ public class CardManager : MonoBehaviour
         }
 
         // create lists
-        master_list = new List<Card>();
-        draw_pile = new List<Card>();
-        hand = new List<Card>();
-        discard_pile = new List<Card>();
+        master_list = new List<CardData>();
+        draw_pile = new List<CardData>();
+        hand = new List<CardData>();
+        discard_pile = new List<CardData>();
     }
 
     public CardUI card_UI;
     public int max_hand_cards = 8;
 
     // card lists
-    private List<Card> master_list; // contains every card in player deck
-    private List<Card> draw_pile;
-    private List<Card> hand;
-    private List<Card> discard_pile;
+    private List<CardData> master_list; // contains every card in player deck
+    private List<CardData> draw_pile;
+    private List<CardData> hand;
+    private List<CardData> discard_pile;
 
     // getters for card lists
-    public List<Card> GetMasterList() { return master_list; }
-    public List<Card> GetDrawPile() { return draw_pile; }
-    public List<Card> GetHand() { return hand; }
-    public List<Card> GetDiscardPile() { return discard_pile; }
+    public List<CardData> GetMasterList() { return master_list; }
+    public List<CardData> GetDrawPile() { return draw_pile; }
+    public List<CardData> GetHand() { return hand; }
+    public List<CardData> GetDiscardPile() { return discard_pile; }
 
     // energy
     private int max_energy = 3;
@@ -52,10 +52,10 @@ public class CardManager : MonoBehaviour
         // reset energy
         current_energy = max_energy;
         // create lists
-        master_list = new List<Card>();
-        draw_pile = new List<Card>();
-        hand = new List<Card>();
-        discard_pile = new List<Card>();
+        master_list = new List<CardData>();
+        draw_pile = new List<CardData>();
+        hand = new List<CardData>();
+        discard_pile = new List<CardData>();
         // update card UI
         card_UI.ResetEnergy();
         card_UI.ClearCardsInHand();
@@ -64,7 +64,7 @@ public class CardManager : MonoBehaviour
 
     // completely overrides master-list
     // should only be done on init when player starts game
-    public void SetMasterList(List<Card> cards)
+    public void SetMasterList(List<CardData> cards)
     {
         // add range to master list
         master_list.Clear();
@@ -94,7 +94,7 @@ public class CardManager : MonoBehaviour
 
         // get random card from draw pile and add to hand
         int index = Random.Range(0, draw_pile.Count);
-        Card card = draw_pile[index];
+        CardData card = draw_pile[index];
 
         // if hand is at max capacity, send card straight to discard pile
         if (hand.Count >= max_hand_cards)
@@ -121,15 +121,15 @@ public class CardManager : MonoBehaviour
         string tag_target = "";
         switch (card.GetCardData().card_target)
         {
-            case Card.CardTarget.Player:
+            case CardData.CardTarget.Player:
                 tag_target = "Player";
                 break;
 
-            case Card.CardTarget.Enemy:
+            case CardData.CardTarget.Enemy:
                 tag_target = "Enemy";
                 break;
 
-            case Card.CardTarget.Environment:
+            case CardData.CardTarget.Environment:
                 tag_target = "Environment";
                 break;
         }
@@ -164,7 +164,7 @@ public class CardManager : MonoBehaviour
         }   
     }
 
-    public void DiscardCard(Card discarded_card)
+    public void DiscardCard(CardData discarded_card)
     {
         // return if hand does not contain card - this should never happen so send ERROR
         if (!hand.Contains(discarded_card))
@@ -185,7 +185,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < total_discarded_cards; i++)
         {
             int index = Random.Range(0, discard_pile.Count);
-            Card card = discard_pile[index];
+            CardData card = discard_pile[index];
             draw_pile.Add(card);
             discard_pile.RemoveAt(index);
         }

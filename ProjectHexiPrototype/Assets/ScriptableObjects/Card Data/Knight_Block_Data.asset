@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f356837bd432f4040bd6ab1089da9e23, type: 3}
-  m_Name: Knight_Block
+  m_Name: Knight_Block_Data
   m_EditorClassIdentifier: 
   card_name: Block!
   energy_cost: 1

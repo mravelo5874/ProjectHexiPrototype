@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class CardEditor : Editor
 {
-    Card myCard;
+    CardData myCard;
 
     // non-editor properties (belong to Card.cs)
     SerializedProperty obj_deal_damage_bool;
@@ -22,7 +22,7 @@ public class CardEditor : Editor
 #if UNITY_EDITOR
     void OnEnable()
     {
-        myCard = (Card)target;
+        myCard = (CardData)target;
 
         // wiggle variables
         obj_deal_damage_bool = serializedObject.FindProperty("deal_damage");
