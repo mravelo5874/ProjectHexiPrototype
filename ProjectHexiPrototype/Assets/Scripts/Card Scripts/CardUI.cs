@@ -50,10 +50,10 @@ public class CardUI : MonoBehaviour
         {
             pos.SetActive(false);
         }
-        // disable energy icons
+        // remove energy icons
         foreach (MyObject icon in energy_icons)
         {
-            icon.gameObject.SetActive(false);
+            icon.transform.localScale = Vector3.zero;
         }
         prev_energy_amount = 0;
     }
@@ -67,18 +67,12 @@ public class CardUI : MonoBehaviour
         }
     }
 
-    public void SetMaxEnergy(int max_energy)
+    public void ResetEnergy()
     {
-        // disable energy icons
+        // remove energy icons
         foreach (MyObject icon in energy_icons)
         {
-            icon.gameObject.SetActive(false);
-        }
-        // enable max energy icons
-        for (int i = 0; i < max_energy; i++)
-        {
-            energy_icons[i].gameObject.SetActive(true);
-            energy_icons[i].transform.localScale = Vector3.zero;
+            icon.transform.localScale = Vector3.zero;
         }
         prev_energy_amount = 0;
     }
@@ -278,18 +272,18 @@ public class CardUI : MonoBehaviour
         UnselectCard();
     }
 
-    public void PlayCard(CardObject card)
+    public void PlayCard(CardObject card, Entity target)
     {
-        StartCoroutine(PlayCardRoutine(card));
+        StartCoroutine(PlayCardRoutine(card, target));
     }
 
-    private IEnumerator PlayCardRoutine(CardObject card)
+    private IEnumerator PlayCardRoutine(CardObject card, Entity target)
     {
         // unselect + unfollow card and play
         follow_player = false;
         selected_card = null;
         hand_positions[prev_selected_card_index].GetComponent<MyObject>().SetRectTransformWidth(DEFAULT_HAND_POS_WIDTH);
-        card.PlayCard();
+        card.PlayCard(target);
         card.myObject.SquishyChangeScale(0.3f, 0.5f, 0.1f, 0.1f);
         yield return new WaitForSeconds(0.2f);
         CardManager.instance.DiscardCard(card.GetCardData());

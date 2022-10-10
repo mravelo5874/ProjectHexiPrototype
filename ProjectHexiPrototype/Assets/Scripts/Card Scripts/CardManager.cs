@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+    //// STATIC VARIABLES ////
+    public static int TRUE_MAX_ENERGY = 8; // the max amount of energy a player can have at once
+    // TODO: change to maybe be infinite or much larger
+
     public static CardManager instance;
     // set this card manager to be the only instance
     void Awake()
@@ -53,7 +57,7 @@ public class CardManager : MonoBehaviour
         hand = new List<Card>();
         discard_pile = new List<Card>();
         // update card UI
-        card_UI.SetMaxEnergy(max_energy);
+        card_UI.ResetEnergy();
         card_UI.ClearCardsInHand();
         card_UI.UpdateVisuals();
     }
@@ -113,12 +117,28 @@ public class CardManager : MonoBehaviour
     {   
         // TODO: play card depending on card type
         bool play_card = false;
-        // send raycast at mouse position to check for enemies / player
+        // determine card target
+        string tag_target = "";
+        switch (card.GetCardData().card_target)
+        {
+            case Card.CardTarget.Player:
+                tag_target = "Player";
+                break;
+
+            case Card.CardTarget.Enemy:
+                tag_target = "Enemy";
+                break;
+
+            case Card.CardTarget.Environment:
+                tag_target = "Environment";
+                break;
+        }
+        // send raycast at mouse position to check for enemies / player / environment
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100))
         {
-            if (hit.transform.tag == "Enemy" || hit.transform.tag == "Player")
+            if (hit.transform.tag == tag_target)
             {
                 play_card = true;
             }
@@ -130,7 +150,7 @@ public class CardManager : MonoBehaviour
             if (card.GetCardData().energy_cost <= current_energy)
             {
                 current_energy -= card.GetCardData().energy_cost;
-                card_UI.PlayCard(card);
+                card_UI.PlayCard(card, hit.transform.GetComponentInParent<Entity>());
             }
             else
             {
@@ -180,9 +200,15 @@ public class CardManager : MonoBehaviour
         // TODO: end player turn
     }
 
-    // add energy
+    // adds one energy
     public void AddEnergy()
     {
-        
+        current_energy++;
+        // make sure energy does not exceed max energy
+        if (current_energy > TRUE_MAX_ENERGY)
+        {
+            current_energy = TRUE_MAX_ENERGY;
+        }
+        card_UI.UpdateVisuals();
     }
 }

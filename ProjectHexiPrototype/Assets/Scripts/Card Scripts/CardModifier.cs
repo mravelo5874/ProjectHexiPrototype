@@ -10,7 +10,7 @@ public class CardModifier
         None,
         DealDamage,
         GainBlock,
-        HealPlayer
+        Heal
     }
     public Modifier modifier;
     public int amount;

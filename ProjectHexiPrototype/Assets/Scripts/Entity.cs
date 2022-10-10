@@ -5,9 +5,15 @@ using UnityEngine;
 public class Entity : MonoBehaviour
 {
     private int health = 0;
-    private int max_health;
-
+    private int max_health = 50;
     private int block = 0;
+
+    public HealthBar health_bar;
+
+    void Start()
+    {
+        health_bar.ShowBar();
+    }
 
     public void Heal(int amount)
     {
@@ -51,9 +57,14 @@ public class Entity : MonoBehaviour
         UpdateEntity();
     }
 
+    public void GainBlock(int amount)
+    {
+        block += amount;
+    }
+
     private void UpdateEntity()
     {
-
+        health_bar.UpdateBar((float)health / (float)max_health);
     }
 
     private void Death()

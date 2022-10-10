@@ -30,9 +30,25 @@ public class CardObject : MonoBehaviour
         return myCard;
     }
 
-    public void PlayCard()
+    public void PlayCard(Entity target)
     {
-        // TODO: play card stuff idk
+        foreach (CardModifier mod in myCard.modifiers)
+        {
+            switch (mod.modifier)
+            {
+                case CardModifier.Modifier.DealDamage:
+                    target.ApplyDamage(mod.amount);
+                    break;
+
+                case CardModifier.Modifier.GainBlock:
+                    target.GainBlock(mod.amount);
+                    break;
+
+                case CardModifier.Modifier.Heal:
+                    target.Heal(mod.amount);
+                    break;
+            }
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
