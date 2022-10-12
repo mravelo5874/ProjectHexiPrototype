@@ -1,19 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Entity : MonoBehaviour
 {
+    //// STATIC VARIABLES ////
+    public static float ENTITY_START_DELAY = 0.25f;
+
     private int current_health = 0;
     private int max_health = 18;
-    private int block = 0;
+    private int current_block = 0;
 
     public HealthBar health_bar;
+    public TextMeshProUGUI block_text;
 
     void Start()
     {
         // set health
         current_health = max_health;
+
+        StartCoroutine(StartDelay());
+    }
+
+    private IEnumerator StartDelay()
+    {
+        yield return new WaitForSeconds(ENTITY_START_DELAY);
         health_bar.ShowBar();
         UpdateEntity();
     }
@@ -37,21 +49,19 @@ public class Entity : MonoBehaviour
         {
             current_health = max_health;
         }
-        
-        // update entity
         UpdateEntity();
     }
 
     public void ApplyDamage(int amount)
     {
         // deal damage to block first
-        if (block > 0)
+        if (current_block > 0)
         {
-            block -= amount;
-            if (block < 0)
+            current_block -= amount;
+            if (current_block < 0)
             {
-                amount = Mathf.Abs(block);
-                block = 0;
+                amount = Mathf.Abs(current_block);
+                current_block = 0;
             }
         }
 
@@ -66,19 +76,20 @@ public class Entity : MonoBehaviour
                 Death();
             }
         }
-        
-        // update
         UpdateEntity();
     }
 
     public void GainBlock(int amount)
     {
-        block += amount;
+        current_block += amount;
+        UpdateEntity();
     }
 
     private void UpdateEntity()
     {
+        // update UI
         health_bar.UpdateBar(current_health, max_health);
+        block_text.text = "block: " + current_block;
     }
 
     private void Death()

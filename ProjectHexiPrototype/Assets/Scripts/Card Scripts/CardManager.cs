@@ -18,7 +18,7 @@ public class CardManager : MonoBehaviour
         }
 
         // create lists
-        master_list = new List<CardData>();
+        player_deck = new List<CardData>();
         draw_pile = new List<CardData>();
         hand = new List<CardData>();
         discard_pile = new List<CardData>();
@@ -28,13 +28,13 @@ public class CardManager : MonoBehaviour
     public int max_hand_cards = 8;
 
     // card lists
-    private List<CardData> master_list; // contains every card in player deck
+    private List<CardData> player_deck; // contains every card in player deck
     private List<CardData> draw_pile;
     private List<CardData> hand;
     private List<CardData> discard_pile;
 
     // getters for card lists
-    public List<CardData> GetMasterList() { return master_list; }
+    public List<CardData> GetMasterList() { return player_deck; }
     public List<CardData> GetDrawPile() { return draw_pile; }
     public List<CardData> GetHand() { return hand; }
     public List<CardData> GetDiscardPile() { return discard_pile; }
@@ -49,29 +49,35 @@ public class CardManager : MonoBehaviour
 
     public void ResetAndClearPiles()
     {
-        // reset energy
-        current_energy = max_energy;
         // create lists
-        master_list = new List<CardData>();
+        player_deck = new List<CardData>();
         draw_pile = new List<CardData>();
         hand = new List<CardData>();
         discard_pile = new List<CardData>();
         // update card UI
-        card_UI.ResetEnergy();
         card_UI.ClearCardsInHand();
+        card_UI.UpdateVisuals();
+    }
+
+    public void ResetEnergy()
+    {
+        // reset energy
+        current_energy = max_energy;
+        card_UI.ResetEnergy();
+        // update card UI
         card_UI.UpdateVisuals();
     }
 
     // completely overrides master-list
     // should only be done on init when player starts game
-    public void SetMasterList(List<CardData> cards)
+    public void SetPlayerDeck(List<CardData> cards)
     {
         // add range to master list
-        master_list.Clear();
-        master_list.AddRange(cards);
+        player_deck.Clear();
+        player_deck.AddRange(cards);
         // place all cards into draw pile
         draw_pile.Clear();
-        draw_pile.AddRange(master_list);
+        draw_pile.AddRange(player_deck);
         // update card UI
         card_UI.UpdateVisuals();
     }
@@ -192,12 +198,6 @@ public class CardManager : MonoBehaviour
 
         // update card UI
         card_UI.UpdateVisuals();
-    }
-
-    public void EndPlayerTurn()
-    {
-        Debug.Log("ending player turn");
-        // TODO: end player turn
     }
 
     // adds one energy
