@@ -9,20 +9,25 @@ public class Entity : MonoBehaviour
     public static float ENTITY_START_DELAY = 0.25f;
 
     private int current_health = 0;
-    private int max_health = 18;
+    private int max_health = 32;
     private int current_block = 0;
 
+    public enum EntityType
+    {
+        Player,
+        Enemy
+    }
+    public EntityType entity_type;
+    public MyObject entity_object;
     public HealthBar health_bar;
     public TextMeshProUGUI block_text;
 
-    void Start()
+    public virtual void Start()
     {
         // set health
         current_health = max_health;
-
         StartCoroutine(StartDelay());
     }
-
     private IEnumerator StartDelay()
     {
         yield return new WaitForSeconds(ENTITY_START_DELAY);
@@ -76,12 +81,20 @@ public class Entity : MonoBehaviour
                 Death();
             }
         }
+
+        // animate entity
+        float current_scale = transform.localScale.x;
+        entity_object.SquishyChangeScale(current_scale * 0.9f, current_scale, 0.1f, 0.1f);
+        // update entity
         UpdateEntity();
     }
 
     public void GainBlock(int amount)
     {
         current_block += amount;
+        // animate entity
+        float current_scale = transform.localScale.x;
+        entity_object.SquishyChangeScale(current_scale * 1.1f, current_scale, 0.1f, 0.1f);
         UpdateEntity();
     }
 
@@ -94,7 +107,17 @@ public class Entity : MonoBehaviour
 
     private void Death()
     {
-        EnemyManager.instance.DeleteEnemy(this);
+        switch (entity_type)
+        {
+            case EntityType.Player:
+                // do nothing at the moment
+                // TODO: player death
+                Debug.Log("Player DIED!");
+                break;
+            case EntityType.Enemy:
+                EnemyManager.instance.DeleteEnemy(this);
+                break;
+        }
     }
     
 }

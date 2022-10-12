@@ -605,6 +605,7 @@ MonoBehaviour:
   draw_text: {fileID: 258028777}
   discard_icon: {fileID: 618373913}
   discard_text: {fileID: 2102457595}
+  end_turn_button: {fileID: 1940466154}
 --- !u!1 &117285644
 GameObject:
   m_ObjectHideFlags: 0
@@ -1643,6 +1644,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f6c942dec72ef418f78b1fe745dd8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entity_type: 0
+  entity_object: {fileID: 368834134}
   health_bar: {fileID: 879740634}
   block_text: {fileID: 2074932404}
 --- !u!1 &374604371
@@ -4331,6 +4334,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8b5cec1eb198aff4aa7be70e56caa9be, type: 2}
   - {fileID: 11400000, guid: 8b5cec1eb198aff4aa7be70e56caa9be, type: 2}
   - {fileID: 11400000, guid: 8b5cec1eb198aff4aa7be70e56caa9be, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
+  - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
   - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
   - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
   - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
@@ -7727,6 +7736,7 @@ GameObject:
   - component: {fileID: 1940466150}
   - component: {fileID: 1940466152}
   - component: {fileID: 1940466153}
+  - component: {fileID: 1940466154}
   m_Layer: 5
   m_Name: EndTurnButton
   m_TagString: Untagged
@@ -7864,6 +7874,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1940466154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940466148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c900a5035aba92845be8bb8b95fec094, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wiggleBoolean: 0
+  wiggleCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  wiggleDuration: 0
+  wiggleMultiplier: 0
 --- !u!1 &1946974864
 GameObject:
   m_ObjectHideFlags: 0

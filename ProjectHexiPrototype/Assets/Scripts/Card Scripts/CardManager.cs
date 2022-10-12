@@ -119,13 +119,12 @@ public class CardManager : MonoBehaviour
     }
 
     // attempt to play a card
-    public void AttemptPlayCard(CardObject card)
+    public void AttemptPlayCard(CardData card_data, CardObject card_object)
     {   
-        // TODO: play card depending on card type
         bool play_card = false;
         // determine card target
         string tag_target = "";
-        switch (card.GetCardData().card_target)
+        switch (card_data.card_target)
         {
             case CardData.CardTarget.Player:
                 tag_target = "Player";
@@ -153,10 +152,10 @@ public class CardManager : MonoBehaviour
         if (play_card)
         {
             // determine if player has enough energy to play card
-            if (card.GetCardData().energy_cost <= current_energy)
+            if (card_data.energy_cost <= current_energy)
             {
-                current_energy -= card.GetCardData().energy_cost;
-                card_UI.PlayCard(card, hit.transform.GetComponentInParent<Entity>());
+                current_energy -= card_data.energy_cost;
+                card_UI.PlayCard(card_object, hit.transform.GetComponentInParent<Entity>());
             }
             else
             {
@@ -170,18 +169,20 @@ public class CardManager : MonoBehaviour
         }   
     }
 
-    public void DiscardCard(CardData discarded_card)
+    public void DiscardCard(CardData card_data, CardObject card_object)
     {
         // return if hand does not contain card - this should never happen so send ERROR
-        if (!hand.Contains(discarded_card))
+        if (!hand.Contains(card_data))
         {
             Debug.LogError("attempting to discard card that is not in player hand");
             return;
         }
         
         // remove card from hand and add to discard pile
-        hand.Remove(discarded_card);
-        discard_pile.Add(discarded_card);
+        hand.Remove(card_data);
+        discard_pile.Add(card_data);
+        // animate card being discarded
+        card_UI.DiscardCardIntoPile(card_object);
     }
     
     // place all cards in discard pile into draw pile

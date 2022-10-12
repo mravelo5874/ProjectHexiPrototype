@@ -16,12 +16,7 @@ public class Player : Entity
         player_deck = new List<CardData>();
     }
 
-    private List<CardData> player_deck;
-    public List<CardData> GetPlayerDeck()
-    {
-        return player_deck;
-    }
-
+    private List<CardData> player_deck; public List<CardData> GetPlayerDeck() { return player_deck; } // public getter for player deck
     private int energy;
     private int total_energy;
 
@@ -31,6 +26,11 @@ public class Player : Entity
         return draw_card_amount;
     }
 
+    // override Entity Start() and call it
+    public override void Start()
+    {
+        base.Start();
+    }
 
     public void AddCardToPlayerDeck(CardData new_card)
     {

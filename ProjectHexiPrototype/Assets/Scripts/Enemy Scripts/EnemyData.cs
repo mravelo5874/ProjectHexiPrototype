@@ -7,9 +7,10 @@ public class EnemyData : ScriptableObject
 {
     public string enemy_name;
     public int max_health;
-    // list of intents that the enemy will do
+    public List<CardModifier.DamageType> weaknesses;
+    public List<CardModifier.DamageType> immunities;
     public bool execute_intents_in_order; // in order or random intents
-    public List<Intent> intents;
+    public List<Intent> intents; // list of intents that the enemy will do
     [System.Serializable]
     public class Intent
     {

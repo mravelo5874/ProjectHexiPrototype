@@ -63,7 +63,7 @@ public class CardObject : MonoBehaviour
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        CardManager.instance.AttemptPlayCard(this);
+        CardManager.instance.AttemptPlayCard(myCard, this);
     }
 
     public void OnPointerExit(PointerEventData eventData)

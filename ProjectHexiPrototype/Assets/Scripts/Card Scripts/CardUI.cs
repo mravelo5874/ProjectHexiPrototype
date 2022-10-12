@@ -21,6 +21,7 @@ public class CardUI : MonoBehaviour
     public List<GameObject> hand_positions;
     
     private List<CardObject> card_objects;
+    public List<CardObject> GetCardObjects() { return card_objects; } // public getter for card objects
     private CardObject selected_card = null;
     private int prev_selected_card_index = 0;
     private bool follow_player = false;
@@ -36,6 +37,9 @@ public class CardUI : MonoBehaviour
     [Header("Discard Pile")]
     public MyObject discard_icon;
     public TextMeshProUGUI discard_text;
+
+    [Header("Buttons")]
+    public MyObject end_turn_button;
 
     void Awake()
     {
@@ -272,11 +276,10 @@ public class CardUI : MonoBehaviour
         UnselectCard();
     }
 
-    public void PlayCard(CardObject card, Entity target)
+    public void PlayCard(CardObject card_object, Entity target)
     {
-        StartCoroutine(PlayCardRoutine(card, target));
+        StartCoroutine(PlayCardRoutine(card_object, target));
     }
-
     private IEnumerator PlayCardRoutine(CardObject card, Entity target)
     {
         // unselect + unfollow card and play
@@ -286,7 +289,18 @@ public class CardUI : MonoBehaviour
         card.PlayCard(target);
         card.myObject.SquishyChangeScale(0.3f, 0.5f, 0.1f, 0.1f);
         yield return new WaitForSeconds(0.2f);
-        CardManager.instance.DiscardCard(card.GetCardData());
+        CardManager.instance.DiscardCard(card.GetCardData(), card);
+    }
+
+    public void DiscardCardIntoPile(CardObject cardObject)
+    {
+        if (card_objects.Contains(cardObject))
+        {
+            StartCoroutine(DiscardCardIntoPileRoutine(cardObject));
+        }
+    }
+    private IEnumerator DiscardCardIntoPileRoutine(CardObject card)
+    {   
         // move card to discard pile
         card.myObject.MoveToTransform(discard_icon.transform, CARD_DRAW_SPEED, true, false);
         card.myObject.ChangeScale(0f, CARD_DRAW_SPEED);
@@ -302,6 +316,37 @@ public class CardUI : MonoBehaviour
 
     public void DiscardCardFromDrawPile(CardData card)
     {
-        // TODO: do this
+        // TODO: inform player that hand is full and card is being discarded
+        StartCoroutine(DiscardCardFromDrawPileRoutine(card));
+    }
+    private IEnumerator DiscardCardFromDrawPileRoutine(CardData card)
+    {
+        // create new card object
+        draw_icon.SquishyChangeScale(0.8f, 1f, 0.1f, 0.1f);
+        // instantiate new card with 0 scale
+        GameObject newCard = Instantiate(card_prefab, draw_icon.transform.position, Quaternion.identity, card_parent);
+        newCard.transform.localScale = Vector3.zero;
+        // set card data
+        CardObject cardObject = newCard.GetComponent<CardObject>();
+        cardObject.SetCard(card);
+        // scale new card to full size
+        cardObject.myObject.ChangeScale(1f, CARD_DRAW_SPEED);
+        // move card to discard pile
+        cardObject.myObject.MoveToTransform(discard_icon.transform, CARD_DRAW_SPEED * 2, true, false);
+        // wait for time
+        yield return new WaitForSeconds (CARD_DRAW_SPEED);
+        // scale to 0
+        cardObject.myObject.ChangeScale(0f, CARD_DRAW_SPEED);
+        // wait for time
+        yield return new WaitForSeconds(CARD_DRAW_SPEED);
+        Destroy(cardObject.gameObject);
+        discard_icon.SquishyChangeScale(0.8f, 1f, 0.1f, 0.1f);
+        // update visuals
+        UpdateVisuals();
+    }
+
+    public void AnimateEndTurnButton()
+    {
+        end_turn_button.SquishyChangeScale(0.9f, 1f, 0.1f, 0.1f);
     }
 }

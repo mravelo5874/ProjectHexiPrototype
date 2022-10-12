@@ -7,7 +7,7 @@ public class HealthBar : MonoBehaviour
 {
     //// STATIC VARIABLES ////
     public static float BAR_MOVE_SPEED = 0.1f;
-    public static float TIME_BETWEEN_RED_ORANGE_BARS = 1f;
+    public static float TIME_BETWEEN_RED_ORANGE_BARS = 0.5f;
 
     public MyObject health_bar_object;
     public MyObject red_bar_object;
@@ -28,6 +28,7 @@ public class HealthBar : MonoBehaviour
 
     public void ShowBar()
     {
+        print ("show bar");
         health_bar_object.SquishyChangeScale(1.1f, 1f, 0.1f, 0.1f);
     }
 
