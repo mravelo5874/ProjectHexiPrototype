@@ -60,12 +60,7 @@ public class Enemy : Entity
         }
 
         // show intent string
-        string intent_string = "";
-        foreach (CardModifier mod in current_intent.actions)
-        {
-            intent_string += mod.modifier.ToString() + "(" + mod.amount.ToString() + ")\n";
-        }
-        intent_text.SetTextMeshText(intent_string);
+        intent_text.SetTextMeshText(CardModifier.GetStringDescription(current_intent.actions));
         intent_text.SquishyChangeScale(1.1f, 1f, 0.1f, 0.1f);
     }
 

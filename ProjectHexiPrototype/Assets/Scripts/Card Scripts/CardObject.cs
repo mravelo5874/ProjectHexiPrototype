@@ -1,5 +1,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class CardObject : MonoBehaviour
@@ -22,7 +23,7 @@ public class CardObject : MonoBehaviour
         // set card UI
         cost_text.text = myCard.energy_cost.ToString();
         card_name_text.text = myCard.card_name.ToString();
-        card_description_text.text = myCard.card_description.ToString();
+        card_description_text.text = CardModifier.GetStringDescription(myCard.modifiers);
     }
 
     public CardData GetCardData()

@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card_name: Block!
   energy_cost: 1
-  card_description: Gain 5 block.
+  card_description: 
+  card_target: 0
   modifiers:
   - modifier: 2
+    damage_type: 0
     amount: 5

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Skeleton_Data
   m_EditorClassIdentifier: 
   enemy_name: Skeleton
-  max_health: 15
+  max_health: 5
   weaknesses: 02000000
   immunities: 03000000
   execute_intents_in_order: 1
@@ -24,9 +24,9 @@ MonoBehaviour:
       amount: 8
   - actions:
     - modifier: 1
-      damage_type: 0
+      damage_type: 2
       amount: 8
   - actions:
     - modifier: 1
-      damage_type: 0
+      damage_type: 1
       amount: 8

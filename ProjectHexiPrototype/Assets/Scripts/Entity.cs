@@ -9,8 +9,9 @@ public class Entity : MonoBehaviour
     public static float ENTITY_START_DELAY = 0.25f;
 
     private int current_health = 0;
-    private int max_health = 32;
+    private int max_health = 5;
     private int current_block = 0;
+    private bool is_dead = false; public bool GetIsDead() { return is_dead; } // public getter
 
     public enum EntityType
     {
@@ -112,7 +113,9 @@ public class Entity : MonoBehaviour
             case EntityType.Player:
                 // do nothing at the moment
                 // TODO: player death
+                is_dead = true;
                 Debug.Log("Player DIED!");
+                CombatManager.instance.EndCombat();
                 break;
             case EntityType.Enemy:
                 EnemyManager.instance.DeleteEnemy(this);

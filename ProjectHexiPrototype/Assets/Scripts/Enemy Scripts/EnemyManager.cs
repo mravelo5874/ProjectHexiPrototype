@@ -89,6 +89,8 @@ public class EnemyManager : MonoBehaviour
         foreach (Enemy enemy in current_enemies)
         {
             enemy.ExecuteEnemyIntents();
+            // check if combat is over
+            if (CombatManager.instance.GetCombatOver()) { yield break; }
             yield return new WaitForSeconds(DELAY_BETWEEN_EXECUTE_INTENTS);
         }
     }
@@ -113,6 +115,11 @@ public class EnemyManager : MonoBehaviour
         enemy_object.SquishyChangeScale(11f, 0f, 0.2f, 0.2f);
         yield return new WaitForSeconds(0.4f);
         Destroy(enemy_object.gameObject);
+    }
 
+    // returns true if combat is over (all enemies are dead) else returns false
+    public bool AllEnemiesDead()
+    {
+        return !(current_enemies.Count > 0);
     }
 }

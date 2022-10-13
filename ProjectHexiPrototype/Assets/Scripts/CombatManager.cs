@@ -8,9 +8,11 @@ public class CombatManager : MonoBehaviour
     public static float START_DELAY = 1f; // delay before start combat routine starts
     public static float ENEMY_SPAWN_DELAY = 0.25f; // delay before combat starts
     public static float BEFORE_DRAW_CARD_DELAY = 0.5f; // delay between spawning enemies and drawing cards
+    public static float END_PLAYER_TURN_DELAY = 1f; // delay once player turn ends
     public static float DRAW_CARD_DELAY = 0.1f; // delay between drawing cards
     public static float PRE_ENEMY_TURN_DELAY = 1f; // delay after enemy intents
     public static float END_ENEMY_TURN_DELAY = 2.5f; // delay after enemy intents
+    public static float END_COMBAT_DELAY = 0.5f; // delay once combat is over before discarding player hand
     public static CombatManager instance;
     void Awake()
     {
@@ -29,6 +31,7 @@ public class CombatManager : MonoBehaviour
     // private vars
     private int combat_turn = 1;
     private bool can_end_player_turn = false;
+    private bool combat_over = false; public bool GetCombatOver() { return combat_over; }
 
     //// ******** START COMBAT ******** ////
 
@@ -61,12 +64,46 @@ public class CombatManager : MonoBehaviour
         StartPlayerTurn();
     }
 
+    //// ******** END COMBAT ******** ////
+
+    public void CheckEndCombat()
+    {
+        if (EnemyManager.instance.AllEnemiesDead() || Player.instance.PlayerDead())
+        {
+            EndCombat();
+        }
+    }
+
+    public void EndCombat()
+    {
+        if (!combat_over)
+        {
+            combat_over = true;
+            StartCoroutine(EndCombatRoutine());
+        }
+    }
+    private IEnumerator EndCombatRoutine()
+    {
+        GameManager.instance.allow_player_input = false; // stop player input
+        can_end_player_turn = false; // player can no longer end their turn
+        // short delay obefore discarding player hand
+        yield return new WaitForSeconds(END_COMBAT_DELAY);
+        // discard player hand
+        StartCoroutine(DiscardEntireHandRoutine());
+        // TODO: Do something here once combat is over
+        Debug.Log("COMBAT OVER!");
+    }   
+
     //// ******** START PLAYER TURN ******** ////
 
     public void StartPlayerTurn()
     {
-        can_end_player_turn = true; // player is able to end their turn now
-        StartCoroutine(StartPlayerTurnRoutine());
+        // check if combat is over
+        if (!combat_over)
+        {
+            can_end_player_turn = true; // player is able to end their turn now
+            StartCoroutine(StartPlayerTurnRoutine());
+        }
     }
     private IEnumerator StartPlayerTurnRoutine()
     {
@@ -88,16 +125,29 @@ public class CombatManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
-        // only end turn if allowed
-        if (can_end_player_turn)
+        // check if combat is over
+        if (!combat_over)
         {
-            can_end_player_turn = false; // player can no longer end their turn
-            GameManager.instance.allow_player_input = false; // stop player input
-            CardManager.instance.card_UI.AnimateEndTurnButton(); // animate end turn button
-            StartCoroutine(EndPlayerTurnRoutine());
+            // only end turn if allowed
+            if (can_end_player_turn)
+            {
+                can_end_player_turn = false; // player can no longer end their turn
+                GameManager.instance.allow_player_input = false; // stop player input
+                CardManager.instance.card_UI.AnimateEndTurnButton(); // animate end turn button
+                StartCoroutine(EndPlayerTurnRoutine());
+            }
         }
     }
     private IEnumerator EndPlayerTurnRoutine()
+    {
+        // discard hand
+        StartCoroutine(DiscardEntireHandRoutine());
+        yield return new WaitForSeconds(END_PLAYER_TURN_DELAY);
+        // start enemy turn
+        StartEnemyTurn();
+    }
+
+    private IEnumerator DiscardEntireHandRoutine()
     {
         // discard all cards in hand
         List<CardObject> player_hand = new List<CardObject>();
@@ -107,15 +157,17 @@ public class CombatManager : MonoBehaviour
             CardManager.instance.DiscardCard(card.GetCardData(), card);
             yield return new WaitForSeconds(DRAW_CARD_DELAY);
         }
-        // start enemy turn
-        StartEnemyTurn();
     }
 
     //// ******** START ENEMY TURN ******** ////
 
     public void StartEnemyTurn()
     {
-        StartCoroutine(StartEnemyTurnRoutine());
+        // check if combat is over
+        if (!combat_over)
+        {
+            StartCoroutine(StartEnemyTurnRoutine());
+        }
     }
     private IEnumerator StartEnemyTurnRoutine()
     {
@@ -128,8 +180,12 @@ public class CombatManager : MonoBehaviour
 
     public void EndEnemyTurn()
     {
-        combat_turn += 1;
-        StartCoroutine(EndEnemyTurnRoutine());
+        // check if combat is over
+        if (!combat_over)
+        {
+            combat_turn += 1;
+            StartCoroutine(EndEnemyTurnRoutine());
+        }
     }
     private IEnumerator EndEnemyTurnRoutine()
     {

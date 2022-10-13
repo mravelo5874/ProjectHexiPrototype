@@ -42,5 +42,8 @@ public class Player : Entity
         player_deck.AddRange(new_cards);
     }
 
-    
+    public bool PlayerDead()
+    {
+        return base.GetIsDead();
+    }
 }

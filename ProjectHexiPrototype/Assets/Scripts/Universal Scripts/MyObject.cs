@@ -15,6 +15,7 @@ public class MyObject : MonoBehaviour
     private Coroutine scaleRoutine;
     private Coroutine wiggleRoutine;
     private Coroutine rotationRoutine;
+    private Coroutine transformRoutine;
     private bool continuousWiggleObject;
 
     public void Move2D(Vector3 moveVector, float speed)
@@ -39,7 +40,7 @@ public class MyObject : MonoBehaviour
 
     public void MoveToTransform(Transform targetTransform, float duration, bool smooth = true, bool local = false)
     {
-        Vector2 startPos = transform.position;
+        Vector3 startPos = transform.position;
 
         // switch to local pos if indicated
         if (local)
@@ -47,7 +48,11 @@ public class MyObject : MonoBehaviour
             startPos = transform.localPosition;
         }
 
-        StartCoroutine(LerpToTransform(targetTransform, startPos, duration, smooth, local));
+        if (transformRoutine != null)
+        {
+            StopCoroutine(transformRoutine);
+        }
+        transformRoutine = StartCoroutine(LerpToTransform(targetTransform, startPos, duration, smooth, local));
     }
 
     public void RandomizePosition(float maxXChange, float maxYChange, float xPos = 0f, float yPos = 0f)
@@ -107,6 +112,14 @@ public class MyObject : MonoBehaviour
             StopCoroutine(rotationRoutine);
 
         rotationRoutine = StartCoroutine(LerpRotationRoutine(targetAngle, duration, smoothLerp));
+    }
+
+    public void ChangeRotation(Vector3 rotation3, float duration, bool smoothLerp = false)
+    {
+        if (rotationRoutine != null)
+            StopCoroutine(rotationRoutine);
+
+        rotationRoutine = StartCoroutine(LerpRotationRoutine(rotation3, duration, smoothLerp));
     }
 
     public void SetTextMeshText(string text)
@@ -192,6 +205,45 @@ public class MyObject : MonoBehaviour
         float random = Random.Range(0f, wiggleDuration);
         yield return new WaitForSeconds(random);
         wiggleRoutine = StartCoroutine(WiggleRoutine());
+    }
+
+    public void ChangeCameraFOV(float targetFOV, float duration, bool smoothLerp = false)
+    {
+        StartCoroutine(ChangeCameraFOVRoutine(targetFOV, duration, smoothLerp));
+    }
+    private IEnumerator ChangeCameraFOVRoutine(float targetFOV, float duration, bool smoothLerp)
+    {
+        // get camera component
+        Camera camera = GetComponent<Camera>();
+        // return if camera component is null
+        if (!camera)
+        {
+            yield break;
+        }
+
+        float startFOV = camera.fieldOfView;
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.deltaTime;
+            if (timer > duration)
+            {
+                camera.fieldOfView = targetFOV;
+                break;
+            }
+            float tempFOV = 0f;
+
+            if (smoothLerp)
+            {
+                tempFOV = Mathf.Lerp(startFOV, targetFOV, Mathf.SmoothStep(0f, 1f, timer / duration));
+            }
+            else
+            {
+                tempFOV = Mathf.Lerp(startFOV, targetFOV, timer / duration);
+            }
+            
+            camera.fieldOfView = tempFOV;
+        }
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- //
@@ -368,31 +420,32 @@ public class MyObject : MonoBehaviour
         }
     }  
 
-    private IEnumerator LerpToTransform(Transform targetTransform, Vector2 startPos, float duration, bool smooth, bool local)
+    private IEnumerator LerpToTransform(Transform targetTransform, Vector3 startPos, float duration, bool smooth, bool local)
     {
         float timer = 0f;
+        Vector3 targetPosition = transform.position;
         while (timer < duration)
         {
             timer += Time.deltaTime;
             // linear interpolation between two positions
-            Vector2 currentPos;
+            Vector3 currentPos;
             if (smooth)
             {   
-                currentPos = Vector2.Lerp(startPos, targetTransform.position, Mathf.SmoothStep(0f, 1f, timer / duration));
+                currentPos = Vector3.Lerp(startPos, targetPosition, Mathf.SmoothStep(0f, 1f, timer / duration));
             }   
             else
             {
-                currentPos = Vector2.Lerp(startPos, targetTransform.position, timer / duration);
+                currentPos = Vector3.Lerp(startPos, targetPosition, timer / duration);
             }
             
             // use local pos if indicated
             if (local)
             {
-                this.transform.localPosition = new Vector3(currentPos.x, currentPos.y, 0f);
+                this.transform.localPosition = new Vector3(currentPos.x, currentPos.y, currentPos.z);
             }
             else
             {
-                this.transform.position = new Vector3(currentPos.x, currentPos.y, 0f);
+                this.transform.position = new Vector3(currentPos.x, currentPos.y, currentPos.z);
             }
             
             yield return null;
@@ -401,11 +454,11 @@ public class MyObject : MonoBehaviour
         // set target position
         if (local)
         {
-            this.transform.localPosition = new Vector3(targetTransform.position.x, targetTransform.position.y, 0f);
+            this.transform.localPosition = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         }
         else
         {
-            this.transform.position = new Vector3(targetTransform.position.x, targetTransform.position.y, 0f);
+            this.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
         }
     }
 
@@ -444,6 +497,36 @@ public class MyObject : MonoBehaviour
             }
             
             transform.localRotation = Quaternion.Euler(0f, 0f, tempAngle);
+            
+            yield return null;
+        }
+    }
+
+    private IEnumerator LerpRotationRoutine(Vector3 targetRotation, float duration, bool smoothLerp)
+    {
+        Vector3 startRotation = transform.localRotation.eulerAngles;
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.deltaTime;
+            if (timer > duration)
+            {
+                transform.localRotation = Quaternion.Euler(targetRotation.x, targetRotation.y, targetRotation.z);
+                break;
+            }
+
+            Vector3 tempRotation = Vector3.zero;
+
+            if (smoothLerp)
+            {
+                tempRotation = Vector3.Lerp(startRotation, targetRotation, Mathf.SmoothStep(0f, 1f, timer / duration));
+            }
+            else
+            {
+                tempRotation = Vector3.Lerp(startRotation, targetRotation, timer / duration);
+            }
+            
+            transform.localRotation = Quaternion.Euler(tempRotation.x, tempRotation.y, tempRotation.z);
             
             yield return null;
         }

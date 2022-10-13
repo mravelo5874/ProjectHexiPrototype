@@ -68,6 +68,50 @@ public class CardUI : MonoBehaviour
         if ((selected_card && follow_player))
         {
             selected_card.transform.position = Vector2.Lerp(selected_card.transform.position, Input.mousePosition, CARD_MOVE_SPEED);
+
+            // TODO: highlight where player needs to play card (Enemies, Player, Environment)
+            // send raycast at mouse position to check for enemies / player / environment
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(ray, 100f);
+
+            foreach (RaycastHit hit in hits)
+            {
+                switch (hit.transform.tag)
+                {
+                    case "Player":
+                        print ("player");
+                        CameraController.instance.FocusCamera(CameraController.FocusEntity.Player);
+                        break;
+
+                    case "Enemy":
+                        print ("enemy");
+                        // determine enemy index
+                        switch (hit.transform.GetComponentInParent<Enemy>().GetEnemyIndex())
+                        {
+                            case 0:
+                                CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy1);
+                                break;
+
+                            case 1:
+                                CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy2);
+                                break;
+
+                            case 2:
+                                CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy2);
+                                break;
+                        }
+                        break;
+                    
+                    case "Environment":
+                        break;
+
+                    default:
+                        print ("reset");
+                        CameraController.instance.ResetCamera();
+                        break;
+                }
+            } 
         }
     }
 
@@ -259,8 +303,6 @@ public class CardUI : MonoBehaviour
         {
             selected_card.myObject.ChangeScale(0.5f, 0.1f);
             follow_player = true;
-
-            // TODO: highlight where player needs to play card (Enemies, Player, Environment)
         }
     }
 
@@ -290,6 +332,9 @@ public class CardUI : MonoBehaviour
         card.myObject.SquishyChangeScale(0.3f, 0.5f, 0.1f, 0.1f);
         yield return new WaitForSeconds(0.2f);
         CardManager.instance.DiscardCard(card.GetCardData(), card);
+
+        // check to see if combat is over
+        CombatManager.instance.CheckEndCombat();
     }
 
     public void DiscardCardIntoPile(CardObject cardObject)
