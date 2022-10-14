@@ -26,7 +26,7 @@ public class CombatManager : MonoBehaviour
 
     // TODO: get enemy data from hex map stuff
     public EnemyData skeleton_enemy;
-    public int enemy_count = 2;
+    public int enemy_count = 3;
 
     // private vars
     private int combat_turn = 1;
@@ -173,6 +173,9 @@ public class CombatManager : MonoBehaviour
     {
         yield return new WaitForSeconds(PRE_ENEMY_TURN_DELAY);
         EnemyManager.instance.ExecuteEnemyIntents();
+        // wait for enemies to finish executing intents
+        while (EnemyManager.instance.GetEnemiesExecutingIntents())
+            yield return null;
         EndEnemyTurn();
     }
 

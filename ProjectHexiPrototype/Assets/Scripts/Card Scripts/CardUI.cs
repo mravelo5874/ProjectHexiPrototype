@@ -13,6 +13,7 @@ public class CardUI : MonoBehaviour
     public static float SELECTED_CARD_OFFSET = 100f;
     public static float DEFAULT_HAND_POS_WIDTH = 50f;
     public static float SELECTED_WIDTH_MULTIPLIER = 4f;
+    public static float RESET_CAMERA_AFTER_PLAY_CARD_DELAY = 0.5f;
 
     // UI components
     [Header("Hand")]
@@ -98,7 +99,7 @@ public class CardUI : MonoBehaviour
                                 break;
 
                             case 2:
-                                CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy2);
+                                CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy3);
                                 break;
                         }
                         break;
@@ -107,8 +108,8 @@ public class CardUI : MonoBehaviour
                         break;
 
                     default:
-                        print ("reset");
-                        CameraController.instance.ResetCamera();
+                        //print ("reset");
+                        //CameraController.instance.ResetCamera();
                         break;
                 }
             } 
@@ -278,6 +279,9 @@ public class CardUI : MonoBehaviour
     {
         if (selected_card)
         {
+            // reset card
+            CameraController.instance.ResetCamera();
+            // unselect card
             selected_card.transform.SetSiblingIndex(prev_selected_card_index);
             hand_positions[prev_selected_card_index].GetComponent<MyObject>().SetRectTransformWidth(DEFAULT_HAND_POS_WIDTH);
             selected_card = null;
@@ -320,6 +324,8 @@ public class CardUI : MonoBehaviour
 
     public void PlayCard(CardObject card_object, Entity target)
     {
+        // reset card
+        CameraController.instance.ResetCamera(RESET_CAMERA_AFTER_PLAY_CARD_DELAY);
         StartCoroutine(PlayCardRoutine(card_object, target));
     }
     private IEnumerator PlayCardRoutine(CardObject card, Entity target)

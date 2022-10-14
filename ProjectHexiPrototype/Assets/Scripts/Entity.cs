@@ -9,7 +9,7 @@ public class Entity : MonoBehaviour
     public static float ENTITY_START_DELAY = 0.25f;
 
     private int current_health = 0;
-    private int max_health = 5;
+    private int max_health = 100;
     private int current_block = 0;
     private bool is_dead = false; public bool GetIsDead() { return is_dead; } // public getter
 

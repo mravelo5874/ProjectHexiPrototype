@@ -119,6 +119,13 @@ public class MyObject : MonoBehaviour
         if (rotationRoutine != null)
             StopCoroutine(rotationRoutine);
 
+        // get negative angles
+        rotation3.x = (rotation3.x > 180) ? rotation3.x - 360 : rotation3.x;
+        rotation3.y = (rotation3.y > 180) ? rotation3.y - 360 : rotation3.y;
+        rotation3.z = (rotation3.z > 180) ? rotation3.z - 360 : rotation3.z;
+
+        print ("angle: " + rotation3);
+
         rotationRoutine = StartCoroutine(LerpRotationRoutine(rotation3, duration, smoothLerp));
     }
 
@@ -519,14 +526,16 @@ public class MyObject : MonoBehaviour
 
             if (smoothLerp)
             {
-                tempRotation = Vector3.Lerp(startRotation, targetRotation, Mathf.SmoothStep(0f, 1f, timer / duration));
+                tempRotation = Quaternion.Lerp(Quaternion.Euler(startRotation), Quaternion.Euler(targetRotation), Mathf.SmoothStep(0f, 1f, timer / duration)).eulerAngles;
+                //tempRotation = Vector3.Lerp(startRotation, targetRotation, Mathf.SmoothStep(0f, 1f, timer / duration));
             }
             else
             {
-                tempRotation = Vector3.Lerp(startRotation, targetRotation, timer / duration);
+                tempRotation = Quaternion.Lerp(Quaternion.Euler(startRotation), Quaternion.Euler(targetRotation), timer / duration).eulerAngles;
+                //tempRotation = Vector3.Lerp(startRotation, targetRotation, timer / duration);
             }
             
-            transform.localRotation = Quaternion.Euler(tempRotation.x, tempRotation.y, tempRotation.z);
+            transform.localRotation = Quaternion.Euler(tempRotation);
             
             yield return null;
         }

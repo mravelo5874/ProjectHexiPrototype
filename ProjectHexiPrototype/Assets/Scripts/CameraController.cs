@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour
     }
 
     // default camera focus module
-    public void ResetCamera()
+    public void ResetCamera(float delay = 0f)
     {
         // return if camera already focused on entity
         if (current_focus_entity == FocusEntity.Default)
@@ -80,6 +80,11 @@ public class CameraController : MonoBehaviour
             return;
         }
         current_focus_entity = FocusEntity.Default;
+        StartCoroutine(ResetCameraRoutine(delay));
+    }
+    private IEnumerator ResetCameraRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         // reset camera focus
         CameraFocusModule module = default_module;
         camera_object.MoveToTransform(module.transform, CAMERA_FOCUS_SPEED, true);

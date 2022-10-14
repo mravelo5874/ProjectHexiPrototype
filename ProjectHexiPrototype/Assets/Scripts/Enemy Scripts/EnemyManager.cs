@@ -23,6 +23,9 @@ public class EnemyManager : MonoBehaviour
     public GameObject enemy_prefab;
 
     // private variables
+    private bool enemies_executing_intents = false;
+    public bool GetEnemiesExecutingIntents() { return enemies_executing_intents; }
+
     private List<bool> enemy_in_place; // is an enemy currently in this location?
     private List<Enemy> current_enemies;
 
@@ -82,17 +85,40 @@ public class EnemyManager : MonoBehaviour
 
     public void ExecuteEnemyIntents()
     {
-        StartCoroutine(ExecuteEnemyIntentsRoutine());
+        if (!enemies_executing_intents)
+        {
+            enemies_executing_intents = true;
+            StartCoroutine(ExecuteEnemyIntentsRoutine());
+        }
     }
     private IEnumerator ExecuteEnemyIntentsRoutine()
     {
         foreach (Enemy enemy in current_enemies)
         {
+            // focus on enemy
+            switch (enemy.GetEnemyIndex())
+            {
+                case 0:
+                    CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy1);
+                    break;
+                case 1:
+                    CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy2);
+                    break;
+                case 2:
+                    CameraController.instance.FocusCamera(CameraController.FocusEntity.Enemy3);
+                    break;
+            }
             enemy.ExecuteEnemyIntents();
+            
+            
             // check if combat is over
             if (CombatManager.instance.GetCombatOver()) { yield break; }
             yield return new WaitForSeconds(DELAY_BETWEEN_EXECUTE_INTENTS);
         }
+
+        // reset camera and stop executing enemy intents
+        CameraController.instance.ResetCamera();
+        enemies_executing_intents = false;
     }
 
     public void DeleteEnemy(Entity enemy)
