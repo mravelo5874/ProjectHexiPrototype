@@ -8,10 +8,10 @@ public class CombatManager : MonoBehaviour
     public static float START_DELAY = 1f; // delay before start combat routine starts
     public static float ENEMY_SPAWN_DELAY = 0.25f; // delay before combat starts
     public static float BEFORE_DRAW_CARD_DELAY = 0.5f; // delay between spawning enemies and drawing cards
-    public static float END_PLAYER_TURN_DELAY = 1f; // delay once player turn ends
+    public static float END_PLAYER_TURN_DELAY = 0.5f; // delay once player turn ends
     public static float DRAW_CARD_DELAY = 0.1f; // delay between drawing cards
-    public static float PRE_ENEMY_TURN_DELAY = 1f; // delay after enemy intents
-    public static float END_ENEMY_TURN_DELAY = 2.5f; // delay after enemy intents
+    public static float PRE_ENEMY_TURN_DELAY = 0.5f; // delay after enemy intents
+    public static float END_ENEMY_TURN_DELAY = 1f; // delay after enemy intents
     public static float END_COMBAT_DELAY = 0.5f; // delay once combat is over before discarding player hand
     public static CombatManager instance;
     void Awake()
@@ -86,7 +86,7 @@ public class CombatManager : MonoBehaviour
     {
         GameManager.instance.allow_player_input = false; // stop player input
         can_end_player_turn = false; // player can no longer end their turn
-        // short delay obefore discarding player hand
+        // short delay before discarding player hand
         yield return new WaitForSeconds(END_COMBAT_DELAY);
         // discard player hand
         StartCoroutine(DiscardEntireHandRoutine());

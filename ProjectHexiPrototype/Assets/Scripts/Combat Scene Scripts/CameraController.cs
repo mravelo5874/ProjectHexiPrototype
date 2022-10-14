@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     //// STATIC VARIABLES ////
-    public static float CAMERA_FOCUS_SPEED = 0.2f;
+    public static float CAMERA_FOCUS_SPEED = 0.25f;
     public static CameraController instance;
     void Awake()
     {

@@ -81,12 +81,10 @@ public class CardUI : MonoBehaviour
                 switch (hit.transform.tag)
                 {
                     case "Player":
-                        print ("player");
                         CameraController.instance.FocusCamera(CameraController.FocusEntity.Player);
                         break;
 
                     case "Enemy":
-                        print ("enemy");
                         // determine enemy index
                         switch (hit.transform.GetComponentInParent<Enemy>().GetEnemyIndex())
                         {

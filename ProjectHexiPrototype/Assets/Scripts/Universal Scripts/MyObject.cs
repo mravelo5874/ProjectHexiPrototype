@@ -124,8 +124,6 @@ public class MyObject : MonoBehaviour
         rotation3.y = (rotation3.y > 180) ? rotation3.y - 360 : rotation3.y;
         rotation3.z = (rotation3.z > 180) ? rotation3.z - 360 : rotation3.z;
 
-        print ("angle: " + rotation3);
-
         rotationRoutine = StartCoroutine(LerpRotationRoutine(rotation3, duration, smoothLerp));
     }
 
@@ -250,6 +248,7 @@ public class MyObject : MonoBehaviour
             }
             
             camera.fieldOfView = tempFOV;
+            yield return null;
         }
     }
 
