@@ -11,23 +11,13 @@ public static class HexMetrics
 
     public static Vector3[] hex_corners = 
     {
-        new Vector3(0f, 0f, OUTER_RADIUS),
-		new Vector3(OUTER_RADIUS, 0f, 0.5f * OUTER_RADIUS),
-		new Vector3(OUTER_RADIUS, 0f, -0.5f * OUTER_RADIUS),
-		new Vector3(0f, 0f, -OUTER_RADIUS),
-		new Vector3(-OUTER_RADIUS, 0f, -0.5f * OUTER_RADIUS),
-		new Vector3(-OUTER_RADIUS, 0f, 0.5f * OUTER_RADIUS)
-    };
-
-    // ordered in clock-wise order starting from top-most cell
-    public static Vector3[] hex_neighbors =
-    {
-        new Vector3(0f, INNER_RADIUS * INNER_RADIUS_MULT, 0f),
-        new Vector3(INNER_RADIUS, OUTER_RADIUS * OUTER_RADIUS_MULT, 0f),
-        new Vector3(-INNER_RADIUS, OUTER_RADIUS * OUTER_RADIUS_MULT, 0f),
-        new Vector3(0f, -INNER_RADIUS * INNER_RADIUS_MULT, 0f),
-        new Vector3(-INNER_RADIUS, -OUTER_RADIUS * OUTER_RADIUS_MULT, 0f),
-        new Vector3(INNER_RADIUS, -OUTER_RADIUS * OUTER_RADIUS_MULT, 0f)
+		new Vector3(OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS),
+		new Vector3(OUTER_RADIUS, 0f, 0f),
+        new Vector3(OUTER_RADIUS * 0.5f, 0f, -INNER_RADIUS),
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, -INNER_RADIUS),
+        new Vector3(-OUTER_RADIUS, 0f, 0f),
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS),
+        new Vector3(OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS)
     };
 
     // ordered in clock-wise order starting from top-most cell

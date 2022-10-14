@@ -7,13 +7,51 @@ public class HexGrid : MonoBehaviour
     public int grid_radius = 4;
     public HexCell hex_cell_prefab;
 
+    [Header("Color")]
+    public Color default_color = Color.white;
+	public Color touched_color = Color.magenta;
+
     [Header("Debug")]
     public bool time_between_cell_spawns;
     public float hex_spawn_delay = 0.5f;
 
     // private vars
+    private HexMesh hex_mesh;
     private List<HexCell> cells;
     private List<HexCell> current_Layer_cells;
+
+    void Awake()
+    {
+        hex_mesh = GetComponentInChildren<HexMesh>();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleInput();
+        }
+    }
+
+    private void HandleInput()
+    {
+        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(inputRay, out hit)) 
+        {
+            if (hit.transform.tag == "HexCell")
+            {
+                TouchCell(hit.transform.GetComponent<HexCell>());
+            }
+		}
+    }
+
+    private void TouchCell(HexCell cell)
+    {
+        print ("cell: " + cell.GetHexCoordinates());
+        cell.color = touched_color;
+		hex_mesh.Triangulate(cells);
+    }
 
     public void CreateGrid()
     {
@@ -33,6 +71,8 @@ public class HexGrid : MonoBehaviour
         {
             yield return StartCoroutine(CreateLayerRoutine(current_Layer_cells));
         }
+        // create mesh
+        hex_mesh.Triangulate(cells);
     }
 
     public IEnumerator CreateLayerRoutine(List<HexCell> prev_layer)
@@ -86,8 +126,9 @@ public class HexGrid : MonoBehaviour
         HexCell cell = Instantiate<HexCell>(hex_cell_prefab);
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
-        // set cell coordinates
+        // set cell data
         cell.SetHexCoordinates(coords, true);
+        cell.color = default_color;
         // return cell
         return cell;
     }

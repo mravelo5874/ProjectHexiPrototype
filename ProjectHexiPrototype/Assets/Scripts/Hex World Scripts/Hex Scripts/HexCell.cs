@@ -11,6 +11,8 @@ public class HexCell : MonoBehaviour
         hex_text.text = "";
     }
 
+    public Color color;
+
     public TextMeshProUGUI hex_text;
 
     // private vars
