@@ -7,30 +7,44 @@ public class HexGrid : MonoBehaviour
     public int grid_radius = 4;
     public HexCell hex_cell_prefab;
 
+    [Header("Debug")]
+    public bool time_between_cell_spawns;
+    public float hex_spawn_delay = 0.5f;
+
     // private vars
-    List<HexCell> cells;
+    private List<HexCell> cells;
+    private List<HexCell> current_Layer_cells;
 
     public void CreateGrid()
     {
+        if (!time_between_cell_spawns)
+        {
+            hex_spawn_delay = 0f;
+        }
+        StartCoroutine(CreateGridRoutine());
+    }
+    private IEnumerator CreateGridRoutine()
+    {
         // init lists
         cells = new List<HexCell>();
-        List<HexCell> layer_cells = new List<HexCell>();
+        current_Layer_cells = new List<HexCell>();
         // create grid layer by layer
         for (int layer = 0; layer < grid_radius; layer++)
         {
-            layer_cells = CreateLayer(layer_cells);
+            yield return StartCoroutine(CreateLayerRoutine(current_Layer_cells));
         }
     }
 
-    public List<HexCell> CreateLayer(List<HexCell> prev_layer)
+    public IEnumerator CreateLayerRoutine(List<HexCell> prev_layer)
     {
-        List<HexCell> layer = new List<HexCell>();
+        current_Layer_cells = new List<HexCell>();
         // layer should be empty if layer = 0
         if (prev_layer.Count == 0)
         {
             // create first cell at origin
             HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0));
-            layer.Add(new_cell);
+            yield return new WaitForSeconds(hex_spawn_delay);
+            current_Layer_cells.Add(new_cell);
             cells.Add(new_cell);
         }
         // else: create cells at each neighbor of each prev cell if no cell exists
@@ -46,24 +60,22 @@ public class HexGrid : MonoBehaviour
                 // for each neighboring cell, make sure it does not already exist
                 // if it doesn't, create cell
                 // if it does, continue to next cell
-                int i = 0;
-                foreach (Vector3Int neighbor_coord in neighboring_cell_coords)
+                for (int i = 0; i < 6; i++)
                 {
+                    Vector3Int neighbor_coord = neighboring_cell_coords[i];
                     if (!CheckIfCellExists(neighbor_coord))
                     {
                         HexCell new_cell = CreateCell(neighboring_cell_pos[i].x, neighboring_cell_pos[i].z, neighbor_coord);
+                        yield return new WaitForSeconds(hex_spawn_delay);
                         created_cells.Add(new_cell);
                     }
-                    i++;
                 }
 
                 // add new cells to list
                 cells.AddRange(created_cells);
-                layer.AddRange(created_cells);
+                current_Layer_cells.AddRange(created_cells);
             }
         }
-
-        return layer;
     }
 
     public HexCell CreateCell(float x, float z, Vector3Int coords)

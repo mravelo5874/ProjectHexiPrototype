@@ -167,8 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec8d1d97fe812934f81bb6f67667876c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid_radius: 4
+  grid_radius: 10
   hex_cell_prefab: {fileID: 3281902064663685719, guid: 2e57210ae0284b94cbecc358c672c985, type: 3}
+  time_between_cell_spawns: 1
+  hex_spawn_delay: 0.1
 --- !u!1 &319137793
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,14 +279,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 365061770}
-  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
-  m_LocalPosition: {x: 0, y: 25, z: -10}
+  m_LocalRotation: {x: 0.6427876, y: 0, z: 0, w: 0.7660445}
+  m_LocalPosition: {x: 0, y: 80, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 80, y: 0, z: 0}
 --- !u!1001 &641793337
 PrefabInstance:
   m_ObjectHideFlags: 0
