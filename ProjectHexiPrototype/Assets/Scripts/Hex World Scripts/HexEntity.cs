@@ -53,9 +53,11 @@ public class HexEntity : MonoBehaviour
     {
         current_cell = cell;
         can_move = false;
+        HexWorldManager.instance.ClearHexOptions(); // clear current cell hex options
         my_object.MoveToTransform(current_cell.transform, ENTITY_MOVE_DURATION, true, false);
         yield return new WaitForSeconds(ENTITY_MOVE_DURATION);
         HexWorldManager.instance.ConsumeWorldEnergy(); // consume one world energy
+        HexWorldManager.instance.SetHexOptions(cell); // set current cell hex options
         can_move = true;
     }
 }

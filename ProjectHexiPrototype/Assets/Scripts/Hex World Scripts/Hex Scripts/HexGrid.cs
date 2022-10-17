@@ -125,6 +125,7 @@ public class HexGrid : MonoBehaviour
         // determine cell hex type
         HexType type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Mountain);
         cell.SetHexType(type, true);
+        // set hex options
         cell.color = default_color;
         // set neighbors
         List<Vector3Int> neighbor_coords = HexMetrics.GetNeighborCoordinates(coords);

@@ -30,29 +30,30 @@ public class HexCell : MonoBehaviour
     public void SetHexCoordinates(Vector3Int coords, bool set_text = false) // public setter
     {
         hex_coordinates = coords;
-        hex_text.text = hex_coordinates.ToString();
+        if (set_text)
+        {
+            hex_text.text = hex_coordinates.ToString();
+        }
     }
 
     private HexType hex_type;
     public void SetHexType(HexType type, bool set_text = false) // public setter
     {
         hex_type = type;
-        hex_text.text = hex_type.ToString();
+        if (set_text)
+        {
+            hex_text.text = hex_type.ToString();
+        }
+        SetHexOptions(type.GetHexOptions());
         // TODO: update cell visuals
     }
 
     private List<HexOption> hex_options;
-    private List<bool> hex_option_available;
-    public void SetHexOptions(List<HexOption> options) // public setter
+    public List<HexOption> GetHexOptions() { return hex_options; } // public getter
+    private void SetHexOptions(List<HexOption> options) // public setter
     {   
         hex_options = new List<HexOption>();
         hex_options.AddRange(options);
-        hex_option_available = new List<bool>();
-        for (int i = 0; i < hex_options.Count; i++)
-        {
-            hex_option_available.Add(true);
-        }
-
         // update UI
         HexWorldManager.instance.UpdateUI();
     }
