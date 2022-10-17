@@ -41,7 +41,6 @@ public class MyObject : MonoBehaviour
     public void MoveToTransform(Transform targetTransform, float duration, bool smooth = true, bool local = false)
     {
         Vector3 startPos = transform.position;
-
         // switch to local pos if indicated
         if (local)
         {
@@ -429,7 +428,7 @@ public class MyObject : MonoBehaviour
     private IEnumerator LerpToTransform(Transform targetTransform, Vector3 startPos, float duration, bool smooth, bool local)
     {
         float timer = 0f;
-        Vector3 targetPosition = transform.position;
+        Vector3 targetPosition = targetTransform.position;
         while (timer < duration)
         {
             timer += Time.deltaTime;

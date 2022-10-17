@@ -9,11 +9,6 @@ public class HexGrid : MonoBehaviour
 
     [Header("Color")]
     public Color default_color = Color.white;
-	public Color touched_color = Color.magenta;
-
-    [Header("Debug")]
-    public bool time_between_cell_spawns;
-    public float hex_spawn_delay = 0.5f;
 
     // private vars
     private HexMesh hex_mesh;
@@ -41,27 +36,27 @@ public class HexGrid : MonoBehaviour
         {
             if (hit.transform.tag == "HexCell")
             {
-                TouchCell(hit.transform.GetComponent<HexCell>());
+                TouchCell(hit.transform.GetComponentInParent<HexCell>());
             }
 		}
     }
 
     private void TouchCell(HexCell cell)
     {
-        print ("cell: " + cell.GetHexCoordinates());
-        cell.color = touched_color;
-		hex_mesh.Triangulate(cells);
+        // float r = Random.Range(0f, 1f);
+        // float g = Random.Range(0f, 1f);
+        // float b = Random.Range(0f, 1f);
+        // cell.color = new Color(r, g, b, 1f);
+		// hex_mesh.Triangulate(cells);
+
+        HexWorldManager.instance.player.GoToHexCell(cell);
     }
 
     public void CreateGrid()
     {
-        if (!time_between_cell_spawns)
-        {
-            hex_spawn_delay = 0f;
-        }
-        StartCoroutine(CreateGridRoutine());
+        CreateGridRoutine();
     }
-    private IEnumerator CreateGridRoutine()
+    private void CreateGridRoutine()
     {
         // init lists
         cells = new List<HexCell>();
@@ -69,13 +64,13 @@ public class HexGrid : MonoBehaviour
         // create grid layer by layer
         for (int layer = 0; layer < grid_radius; layer++)
         {
-            yield return StartCoroutine(CreateLayerRoutine(current_Layer_cells));
+            CreateLayerRoutine(current_Layer_cells);
         }
         // create mesh
         hex_mesh.Triangulate(cells);
     }
 
-    public IEnumerator CreateLayerRoutine(List<HexCell> prev_layer)
+    public void CreateLayerRoutine(List<HexCell> prev_layer)
     {
         current_Layer_cells = new List<HexCell>();
         // layer should be empty if layer = 0
@@ -83,7 +78,6 @@ public class HexGrid : MonoBehaviour
         {
             // create first cell at origin
             HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0));
-            yield return new WaitForSeconds(hex_spawn_delay);
             current_Layer_cells.Add(new_cell);
             cells.Add(new_cell);
         }
@@ -106,13 +100,13 @@ public class HexGrid : MonoBehaviour
                     if (!CheckIfCellExists(neighbor_coord))
                     {
                         HexCell new_cell = CreateCell(neighboring_cell_pos[i].x, neighboring_cell_pos[i].z, neighbor_coord);
-                        yield return new WaitForSeconds(hex_spawn_delay);
+                        // add cell to lists
                         created_cells.Add(new_cell);
+                        cells.Add(new_cell);
                     }
                 }
 
-                // add new cells to list
-                cells.AddRange(created_cells);
+                // add new cells to current layer list
                 current_Layer_cells.AddRange(created_cells);
             }
         }
@@ -127,8 +121,20 @@ public class HexGrid : MonoBehaviour
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         // set cell data
-        cell.SetHexCoordinates(coords, true);
+        cell.SetHexCoordinates(coords);
+        // determine cell hex type
+        HexType type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Mountain);
+        cell.SetHexType(type, true);
         cell.color = default_color;
+        // set neighbors
+        List<Vector3Int> neighbor_coords = HexMetrics.GetNeighborCoordinates(coords);
+        for (int i = 0; i < 6; i ++)
+        {
+            if (CheckIfCellExists(neighbor_coords[i]))
+            {
+                cell.SetNeighbor((HexDirection)i, GetHexCellFromCoordinates(neighbor_coords[i]));
+            }
+        }
         // return cell
         return cell;
     }
@@ -141,5 +147,15 @@ public class HexGrid : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public HexCell GetHexCellFromCoordinates(Vector3 coords)
+    {
+        foreach (HexCell cell in cells)
+        {
+            if (cell.GetHexCoordinates() == coords)
+                return cell;
+        }
+        return null;
     }
 }

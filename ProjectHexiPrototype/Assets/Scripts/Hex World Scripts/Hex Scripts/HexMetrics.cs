@@ -9,18 +9,31 @@ public static class HexMetrics
     public const float INNER_RADIUS_MULT = 2f;
     public const float OUTER_RADIUS_MULT = 1.5f;
 
+    public const float SOLID_FACTOR = 0.75f;
+    public const float BLEND_FACTOR = 1f - SOLID_FACTOR;
+
     public static Vector3[] hex_corners = 
     {
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS),
 		new Vector3(OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS),
 		new Vector3(OUTER_RADIUS, 0f, 0f),
         new Vector3(OUTER_RADIUS * 0.5f, 0f, -INNER_RADIUS),
         new Vector3(-OUTER_RADIUS * 0.5f, 0f, -INNER_RADIUS),
         new Vector3(-OUTER_RADIUS, 0f, 0f),
-        new Vector3(-OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS),
-        new Vector3(OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS)
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS)
     };
 
-    // ordered in clock-wise order starting from top-most cell
+    public static Vector3 GetFirstCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir];
+    }
+
+    public static Vector3 GetSecondCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir + 1];
+    }
+
+    // ordered in clock-wise order starting from HexDirection.N cell
     public static List<Vector3> GetNeighborPositions(Vector3 cell_pos)
     {
         List<Vector3> neighbor_pos = new List<Vector3>();
@@ -44,5 +57,20 @@ public static class HexMetrics
         neighbor_coords.Add(new Vector3Int(cell_coords.x - 1, cell_coords.y, cell_coords.z + 1));
         neighbor_coords.Add(new Vector3Int(cell_coords.x - 1, cell_coords.y - 1, cell_coords.z));
         return neighbor_coords;
+    }
+
+    public static Vector3 GetFirstSolidCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir] * SOLID_FACTOR;
+    }
+
+    public static Vector3 GetSecondSolidCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir + 1] * SOLID_FACTOR;
+    }
+
+    public static Vector3 GetBridge(HexDirection dir)
+    {
+        return (hex_corners[(int)dir] + hex_corners[(int)dir + 1]) * BLEND_FACTOR;
     }
 }
