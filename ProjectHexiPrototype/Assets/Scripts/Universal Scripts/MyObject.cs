@@ -87,6 +87,7 @@ public class MyObject : MonoBehaviour
 
     public void SquishyChangeScale(float targetScale1, float targetScale2, float duration1, float duration2)
     {
+        // end prev coroutine if not null
         StartCoroutine(SquishyChangeScaleRoutine(targetScale1, targetScale2, duration1, duration2));
     }
 
@@ -348,9 +349,17 @@ public class MyObject : MonoBehaviour
 
     private IEnumerator SquishyChangeScaleRoutine(float targetScale1, float targetScale2, float duration1, float duration2)
     {
-        StartCoroutine(LerpScale(transform.localScale.x, targetScale1, duration1));
+        if (scaleRoutine != null)
+        {
+            StopCoroutine(scaleRoutine);
+        }
+        scaleRoutine = StartCoroutine(LerpScale(transform.localScale.x, targetScale1, duration1));
         yield return new WaitForSeconds(duration1);
-        StartCoroutine(LerpScale(transform.localScale.x, targetScale2, duration2));
+        if (scaleRoutine != null)
+        {
+            StopCoroutine(scaleRoutine);
+        }
+        scaleRoutine = StartCoroutine(LerpScale(transform.localScale.x, targetScale2, duration2));
         // yield return new WaitForSeconds(duration2);
     }
 

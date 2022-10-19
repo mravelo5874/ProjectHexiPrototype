@@ -51,13 +51,15 @@ public class HexEntity : MonoBehaviour
 
     private IEnumerator GoToHexCellRoutine(HexCell cell)
     {
-        current_cell = cell;
         can_move = false;
+        HexWorldManager.instance.ClearAdjacentHexCellOutlines(current_cell); // clear hex cell outlines
+        current_cell = cell; // set new target hex cell
         HexWorldManager.instance.ClearHexOptions(); // clear current cell hex options
         my_object.MoveToTransform(current_cell.transform, ENTITY_MOVE_DURATION, true, false);
         yield return new WaitForSeconds(ENTITY_MOVE_DURATION);
         HexWorldManager.instance.ConsumeWorldEnergy(); // consume one world energy
         HexWorldManager.instance.SetHexOptions(cell); // set current cell hex options
+        HexWorldManager.instance.ShowAvailableAdjacentHexCellOutlines(cell); // show new hex cell outlines
         can_move = true;
     }
 }

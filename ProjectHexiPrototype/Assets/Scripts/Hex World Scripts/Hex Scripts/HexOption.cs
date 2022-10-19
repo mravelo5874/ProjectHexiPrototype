@@ -50,7 +50,11 @@ public class HexOption
         }
 
         // at what cost ?
-        charges--;
+        // only reduce charges if not -1 (infinite)
+        if (charges != -1)
+        {
+            charges--;
+        }
         HexWorldManager.instance.ConsumeWorldEnergy(cost);
         
         // TODO: execute option

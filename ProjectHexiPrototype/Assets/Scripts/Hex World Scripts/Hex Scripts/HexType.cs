@@ -51,13 +51,13 @@ public static class HexTypeExtensions
                 options.Add(new HexOption(HexOption.OptionType.MineForLoot, 3, 1));
                 break;
             case HexType.Chest:
-                options.Add(new HexOption(HexOption.OptionType.CollectLoot, -1, 0));
+                options.Add(new HexOption(HexOption.OptionType.CollectLoot, 1, 0));
                 break;
             case HexType.Castle:
-                options.Add(new HexOption(HexOption.OptionType.EnterCastle, -1, 0));
+                options.Add(new HexOption(HexOption.OptionType.EnterCastle, 1, 0));
                 break;
             case HexType.Camp:
-                options.Add(new HexOption(HexOption.OptionType.EnterCamp, -1, 0));
+                options.Add(new HexOption(HexOption.OptionType.EnterCamp, 1, 0));
                 break;
         }
         return options;

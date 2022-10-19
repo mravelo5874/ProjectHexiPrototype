@@ -13,6 +13,7 @@ public class HexGrid : MonoBehaviour
     // private vars
     private HexMesh hex_mesh;
     private List<HexCell> cells;
+    public List<HexCell> GetHexCells() { return cells; }
     private List<HexCell> current_Layer_cells;
 
     void Awake()
@@ -22,6 +23,12 @@ public class HexGrid : MonoBehaviour
 
     void Update()
     {
+        // return if player input restricted
+        if (!GameManager.instance.allow_player_input)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             HandleInput();
@@ -49,7 +56,11 @@ public class HexGrid : MonoBehaviour
         // cell.color = new Color(r, g, b, 1f);
 		// hex_mesh.Triangulate(cells);
 
-        HexWorldManager.instance.player.GoToHexCell(cell);
+        // only travel to other hex cell if not currently inside a hex cell 
+        if (!HexWorldManager.instance.GetInsideHexCell())
+        {
+            HexWorldManager.instance.player.GoToHexCell(cell);
+        }
     }
 
     public void CreateGrid()
@@ -64,20 +75,20 @@ public class HexGrid : MonoBehaviour
         // create grid layer by layer
         for (int layer = 0; layer < grid_radius; layer++)
         {
-            CreateLayerRoutine(current_Layer_cells);
+            CreateLayerRoutine(current_Layer_cells, layer);
         }
         // create mesh
         hex_mesh.Triangulate(cells);
     }
 
-    public void CreateLayerRoutine(List<HexCell> prev_layer)
+    public void CreateLayerRoutine(List<HexCell> prev_layer, int layer_index)
     {
         current_Layer_cells = new List<HexCell>();
         // layer should be empty if layer = 0
         if (prev_layer.Count == 0)
         {
             // create first cell at origin
-            HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0));
+            HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0), 0);
             current_Layer_cells.Add(new_cell);
             cells.Add(new_cell);
         }
@@ -99,7 +110,7 @@ public class HexGrid : MonoBehaviour
                     Vector3Int neighbor_coord = neighboring_cell_coords[i];
                     if (!CheckIfCellExists(neighbor_coord))
                     {
-                        HexCell new_cell = CreateCell(neighboring_cell_pos[i].x, neighboring_cell_pos[i].z, neighbor_coord);
+                        HexCell new_cell = CreateCell(neighboring_cell_pos[i].x, neighboring_cell_pos[i].z, neighbor_coord, layer_index);
                         // add cell to lists
                         created_cells.Add(new_cell);
                         cells.Add(new_cell);
@@ -112,7 +123,7 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    public HexCell CreateCell(float x, float z, Vector3Int coords)
+    public HexCell CreateCell(float x, float z, Vector3Int coords, int layer)
     {
         // calculate pos
         Vector3 position = new Vector3(x, 0f, z);
@@ -122,8 +133,9 @@ public class HexGrid : MonoBehaviour
         cell.transform.localPosition = position;
         // set cell data
         cell.SetHexCoordinates(coords);
+        cell.SetHexLayer(layer);
         // determine cell hex type
-        HexType type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Mountain);
+        HexType type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Camp + 1);
         cell.SetHexType(type, true);
         // set hex options
         cell.color = default_color;
