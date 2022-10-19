@@ -15,6 +15,7 @@ public class HexEntity : MonoBehaviour
     // private vars
     private MyObject my_object;
     private HexCell current_cell;
+    public HexCell GetCurrentHexCell() { return current_cell; } // public getter
     private bool can_move = false;
 
     public void SetStartHexCell(HexCell cell)

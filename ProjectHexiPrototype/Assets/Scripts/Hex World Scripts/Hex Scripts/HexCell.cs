@@ -7,6 +7,7 @@ public class HexCell : MonoBehaviour
 {
     //// STATIC VARIABLES ////
     public static float HEX_CELL_OUTLINE_ANIMATION_DURATION = 1f;
+    public static float HEX_CELL_OUTLINE_ALPHA = 0.25f;
 
     void Awake()
     {
@@ -67,11 +68,13 @@ public class HexCell : MonoBehaviour
         HexWorldManager.instance.UpdateUI();
     }
 
-    public void ShowHexOutline()
+    public void ShowHexOutline(Color outline_color)
     {
         if (!hex_outline_active)
         {
             hex_outline_active = true;
+            hex_outline.SetImageColor(outline_color);
+            hex_outline.SetImageAlpha(HEX_CELL_OUTLINE_ALPHA);
             hex_outline.SquishyChangeScale(1.1f, 1f, 0.2f, 0.2f);
         }
     }

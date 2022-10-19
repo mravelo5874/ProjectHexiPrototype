@@ -27,6 +27,8 @@ public class HexWorldManager : MonoBehaviour
     public int enemies_to_spawn;
     public int enemy_min_layer;
 
+    private List<HexEntity> hex_enemies;
+
     [Header("Hex World UI")]
     public TextMeshProUGUI world_energy_text;
     // hex cell button
@@ -114,6 +116,7 @@ public class HexWorldManager : MonoBehaviour
         }
 
         // spawn enemies
+        hex_enemies = new List<HexEntity>();
         for (int i = 0; i < enemies_to_spawn; i++)
         {
             // select hex cell
@@ -130,6 +133,7 @@ public class HexWorldManager : MonoBehaviour
             // spawn enemy
             HexEntity enemy_entity = Instantiate(hex_entity_enemy, world).GetComponent<HexEntity>();
             enemy_entity.SetStartHexCell(cell);
+            hex_enemies.Add(enemy_entity);
         }
     }
 
@@ -224,8 +228,18 @@ public class HexWorldManager : MonoBehaviour
         {
             if (hex_cell != null)
             {
+                Color outline_color = Color.white;
                 // TODO: only show outline iff hex cell is accessible
-                hex_cell.ShowHexOutline();
+                
+                // check if hex cell contains enemy
+                foreach (HexEntity enemy in hex_enemies)
+                {
+                    if (enemy.GetCurrentHexCell().GetHexCoordinates() == hex_cell.GetHexCoordinates())
+                    {
+                        outline_color = Color.red;
+                    }
+                }
+                hex_cell.ShowHexOutline(outline_color);
             }
         }   
     }
