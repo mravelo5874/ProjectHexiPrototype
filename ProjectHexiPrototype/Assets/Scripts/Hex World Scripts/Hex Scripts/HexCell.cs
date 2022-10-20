@@ -15,6 +15,14 @@ public class HexCell : MonoBehaviour
         hex_text.text = "";
         // create neighbor array
         neighbors = new HexCell[6];
+
+        // spawn all 6 inner points
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.N), Quaternion.identity, transform);
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.NE), Quaternion.identity, transform);
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.SE), Quaternion.identity, transform);
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.S), Quaternion.identity, transform);
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.SW), Quaternion.identity, transform);
+        // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.NW), Quaternion.identity, transform);
     }
     
     public Color color;

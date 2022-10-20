@@ -12,8 +12,8 @@ public class HexEntity : MonoBehaviour
         my_object = GetComponent<MyObject>();
     }
 
-    // private vars
     private MyObject my_object;
+    public MyObject GetMyObject() { return my_object; } // public getter
     private HexCell current_cell;
     public HexCell GetCurrentHexCell() { return current_cell; } // public getter
     private bool can_move = false;
@@ -54,13 +54,24 @@ public class HexEntity : MonoBehaviour
     {
         can_move = false;
         HexWorldManager.instance.ClearAdjacentHexCellOutlines(current_cell); // clear hex cell outlines
-        current_cell = cell; // set new target hex cell
         HexWorldManager.instance.ClearHexOptions(); // clear current cell hex options
-        my_object.MoveToTransform(current_cell.transform, ENTITY_MOVE_DURATION, true, false);
+        HexWorldManager.instance.MovePlayerToHexCell(cell, HexMetrics.GetDirectionBetweenHexCells(current_cell, cell));
+        current_cell = cell; // set new target hex cell
         yield return new WaitForSeconds(ENTITY_MOVE_DURATION);
         HexWorldManager.instance.ConsumeWorldEnergy(); // consume one world energy
         HexWorldManager.instance.SetHexOptions(cell); // set current cell hex options
         HexWorldManager.instance.ShowAvailableAdjacentHexCellOutlines(cell); // show new hex cell outlines
         can_move = true;
+    }
+
+    public void Delete()
+    {
+        StartCoroutine(DeleteRoutine());
+    }
+    private IEnumerator DeleteRoutine()
+    {
+        my_object.SquishyChangeScale(1.1f, 0f, 0.1f, 0.1f);
+        yield return new WaitForSeconds(0.2f);
+        Destroy(this.gameObject);
     }
 }

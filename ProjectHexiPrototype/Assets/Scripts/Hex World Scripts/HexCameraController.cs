@@ -40,6 +40,11 @@ public class HexCameraController : MonoBehaviour
         }
     }
 
+    public void SetFollowTarget(Transform new_target)
+    {
+        target = new_target;
+    }
+
     public void SetDefaultFocus()
     {
         // set default offset + rotation

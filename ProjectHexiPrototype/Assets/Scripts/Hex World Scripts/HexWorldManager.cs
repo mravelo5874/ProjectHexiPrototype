@@ -21,6 +21,7 @@ public class HexWorldManager : MonoBehaviour
     public HexGrid hex_grid;
     public Transform world;
     public HexEntity player;
+    public GameObject hex_point;
 
     [Header("Hex Enemies")]
     public GameObject hex_entity_enemy;
@@ -28,6 +29,7 @@ public class HexWorldManager : MonoBehaviour
     public int enemy_min_layer;
 
     private List<HexEntity> hex_enemies;
+    private bool combat_init = false;
 
     [Header("Hex World UI")]
     public TextMeshProUGUI world_energy_text;
@@ -144,6 +146,68 @@ public class HexWorldManager : MonoBehaviour
         UpdateUI();
     }
 
+    public void MovePlayerToHexCell(HexCell cell, HexDirection dir)
+    {
+        StartCoroutine(MovePlayerToHexCellRoutine(cell, dir));
+    }
+    private IEnumerator MovePlayerToHexCellRoutine(HexCell cell, HexDirection dir)
+    {
+        // rotate player iff rotation is not (0f, 0f, 0f)
+        if (player.transform.rotation.eulerAngles != Vector3.zero)
+        {
+            player.GetMyObject().ChangeRotation(Vector3.zero, 0.25f);
+        }
+
+        // determine if there is an enemy on hex cell
+        foreach (HexEntity enemy_entity in hex_enemies)
+        {
+            if (enemy_entity.GetCurrentHexCell().GetHexCoordinates() == cell.GetHexCoordinates())
+            {
+                // disable player input and set combat bool
+                combat_init = true;
+                GameManager.instance.allow_player_input = false;
+                bool rotate_enemy = false;
+                Vector3 enemy_pos = cell.transform.position;
+                Vector3 player_pos = player.transform.position;
+                // change enemy and player locations
+                if (dir == HexDirection.N || dir == HexDirection.NE || dir == HexDirection.SE)
+                {
+                    rotate_enemy = true;
+                    enemy_pos = HexMetrics.GetInnerPoint(cell.transform.position, HexDirection.SE);
+                    player_pos = HexMetrics.GetInnerPoint(cell.transform.position, HexDirection.SW);
+                }
+                else if (dir == HexDirection.S || dir == HexDirection.SW || dir == HexDirection.NW)
+                {
+                    enemy_pos = HexMetrics.GetInnerPoint(cell.transform.position, HexDirection.SW);
+                    player_pos = HexMetrics.GetInnerPoint(cell.transform.position, HexDirection.SE);
+                }
+                // move entities to positions
+                enemy_entity.GetMyObject().MoveToPosition(enemy_pos, HexEntity.ENTITY_MOVE_DURATION * 0.5f, true, false);
+                player.GetMyObject().MoveToPosition(player_pos, HexEntity.ENTITY_MOVE_DURATION, true, false);
+                yield return new WaitForSeconds(HexEntity.ENTITY_MOVE_DURATION);
+                // rotate entities
+                if (rotate_enemy)
+                {
+                    // rotate enemy
+                    enemy_entity.GetMyObject().ChangeRotation(new Vector3(0f, 180f, 0f), 0.25f);
+                }
+                else
+                {
+                    // rotate player
+                    player.GetMyObject().ChangeRotation(new Vector3(0f, 180f, 0f), 0.25f);
+                }
+                // zoom camera on hex cell
+                HexCameraController.instance.SetFollowTarget(cell.transform);
+                HexCameraController.instance.SetInsideHexCellFocus();
+                // TODO: begin enemy fight - for now just return from combat
+                yield return new WaitForSeconds(1f);
+                ReturnFromCombat();
+                yield break;
+            }
+        }
+        player.GetMyObject().MoveToTransform(cell.transform, HexEntity.ENTITY_MOVE_DURATION, true, false);
+    }
+
     public void SetHexOptions(HexCell cell)
     {
         List<HexOption> hex_options = cell.GetHexOptions();
@@ -156,7 +220,7 @@ public class HexWorldManager : MonoBehaviour
         }
 
         // show hex cell button if options are available
-        if (current_hex_option_prefabs.Count > 0)
+        if (current_hex_option_prefabs.Count > 0 && !combat_init)
         {
             hex_cell_button.SquishyChangeScale(1.1f, 1f, 0.1f, 0.1f);
         }
@@ -171,7 +235,7 @@ public class HexWorldManager : MonoBehaviour
         current_hex_option_prefabs.Clear();
 
         // hide hex cell button
-        if (hex_cell_button.transform.localScale.x > 0f)
+        if (hex_cell_button.transform.localScale.x > 0f && !combat_init)
         {
             hex_cell_button.SquishyChangeScale(1.1f, 0f, 0.1f, 0.1f);
         }
@@ -183,12 +247,10 @@ public class HexWorldManager : MonoBehaviour
 
         if (inside_hex_cell)
         {
-            inside_hex_cell = false;
             ExitHexCell();
         }
         else if (!inside_hex_cell)
         {
-            inside_hex_cell = true;
             EnterHexCell();
         }
 
@@ -197,9 +259,9 @@ public class HexWorldManager : MonoBehaviour
 
     public void EnterHexCell()
     {
+        inside_hex_cell = true;
         // zoom camera on player
         HexCameraController.instance.SetInsideHexCellFocus();
-
         // show hex cell option(s)
         foreach (HexOptionPrefab option in current_hex_option_prefabs)
         {
@@ -209,9 +271,9 @@ public class HexWorldManager : MonoBehaviour
 
     public void ExitHexCell()
     {
+        inside_hex_cell = false;
         // un-zoom camera on player
         HexCameraController.instance.SetDefaultFocus();
-
         // hide hex cell option(s)
         foreach (HexOptionPrefab option in current_hex_option_prefabs)
         {
@@ -256,5 +318,38 @@ public class HexWorldManager : MonoBehaviour
                 hex_cell.HideHexOutline();
             }
         }
+    }
+
+    public void ReturnFromCombat()
+    {
+        StartCoroutine(ReturnFromCombatRoutine());
+    }
+    private IEnumerator ReturnFromCombatRoutine()
+    {
+        // delete enemy
+        foreach (HexEntity enemy_entity in hex_enemies)
+        {
+            if (enemy_entity.GetCurrentHexCell().GetHexCoordinates() == player.GetCurrentHexCell().GetHexCoordinates())
+            {
+                enemy_entity.Delete();
+                hex_enemies.Remove(enemy_entity);
+                yield return new WaitForSeconds(0.5f);
+                break;
+            }
+        }
+
+        // unfocus camera from hex cell and set player as target
+        HexCameraController.instance.SetFollowTarget(player.transform);
+        HexCameraController.instance.SetDefaultFocus();
+
+        // move player to center of hex tile
+        player.GetMyObject().MoveToPosition(player.GetCurrentHexCell().transform.position, HexEntity.ENTITY_MOVE_DURATION * 0.5f, true, false);
+        yield return new WaitForSeconds(0.5f);
+
+        combat_init = false;
+        GameManager.instance.allow_player_input = true;
+        ClearHexOptions();
+        SetHexOptions(player.GetCurrentHexCell());
+        UpdateUI();
     }
 }

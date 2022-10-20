@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class HexMetrics
 {
+    public const float SQRT_3 = 1.73205080757f;
+
     public const float OUTER_RADIUS = 10f;
     public const float INNER_RADIUS = OUTER_RADIUS * 0.866025404f; // ~ e * (sqrt(3) / 2)
     public const float INNER_RADIUS_MULT = 2f;
@@ -22,6 +24,21 @@ public static class HexMetrics
         new Vector3(-OUTER_RADIUS, 0f, 0f),
         new Vector3(-OUTER_RADIUS * 0.5f, 0f, INNER_RADIUS)
     };
+
+    public static Vector3[] hex_inner_points =
+    {
+        new Vector3(0f, 0f, OUTER_RADIUS / SQRT_3),
+        new Vector3(OUTER_RADIUS * 0.5f, 0f, OUTER_RADIUS * 0.5f / SQRT_3),
+        new Vector3(OUTER_RADIUS * 0.5f, 0f, -OUTER_RADIUS * 0.5f / SQRT_3),
+        new Vector3(0f, 0f, -OUTER_RADIUS / SQRT_3),
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, -OUTER_RADIUS * 0.5f / SQRT_3),
+        new Vector3(-OUTER_RADIUS * 0.5f, 0f, OUTER_RADIUS * 0.5f / SQRT_3),
+    };
+
+    public static Vector3 GetInnerPoint(Vector3 center, HexDirection dir)
+    {
+        return center + hex_inner_points[(int)dir];
+    }
 
     public static Vector3 GetFirstCorner(HexDirection dir)
     {
@@ -72,5 +89,20 @@ public static class HexMetrics
     public static Vector3 GetBridge(HexDirection dir)
     {
         return (hex_corners[(int)dir] + hex_corners[(int)dir + 1]) * BLEND_FACTOR;
+    }
+
+    public static HexDirection GetDirectionBetweenHexCells(HexCell from, HexCell to)
+    {
+        List<Vector3Int> neighbor_coords = GetNeighborCoordinates(from.GetHexCoordinates());
+        // check if "to" cell is a neighbor coord starting from HexDirection.N
+        for (int i = 0; i < 6; i++)
+        {
+            if (neighbor_coords[i] == to.GetHexCoordinates())
+            {
+                return (HexDirection)i;
+            }
+        }
+        // default return value incase hex cells are not neighbors
+        return HexDirection.N;
     }
 }

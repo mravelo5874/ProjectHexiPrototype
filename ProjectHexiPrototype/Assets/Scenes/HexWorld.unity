@@ -1219,6 +1219,7 @@ MonoBehaviour:
   hex_grid: {fileID: 296960857}
   world: {fileID: 319137794}
   player: {fileID: 930168644}
+  hex_point: {fileID: 3160739571643559787, guid: f0d15b4c77667104ebb923af1124a582, type: 3}
   hex_entity_enemy: {fileID: 4912859664653503603, guid: af4251c253cc407459f596063c9d9b35, type: 3}
   enemies_to_spawn: 12
   enemy_min_layer: 2

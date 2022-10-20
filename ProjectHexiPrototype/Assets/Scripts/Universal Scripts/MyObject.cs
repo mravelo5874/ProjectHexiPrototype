@@ -24,17 +24,16 @@ public class MyObject : MonoBehaviour
         transform.position += (moveVector * speed);
     }
 
-    public void MoveToPosition(Vector2 targetPos, float duration, bool smooth = true, bool local = false)
+    public void MoveToPosition(Vector3 targetPos, float duration, bool smooth = true, bool local = false)
     {
-        Vector2 startPos = transform.position;
-        Vector2 endPos = targetPos;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = targetPos;
 
         // switch to local pos if indicated
         if (local)
         {
             startPos = transform.localPosition;
         }
-
         StartCoroutine(LerpPosition(startPos, endPos, duration, smooth, local));
     }
 
@@ -393,31 +392,31 @@ public class MyObject : MonoBehaviour
         }
     }
 
-    private IEnumerator LerpPosition(Vector2 startPos, Vector2 endPos, float duration, bool smooth, bool local)
+    private IEnumerator LerpPosition(Vector3 startPos, Vector3 endPos, float duration, bool smooth, bool local)
     {
         float timer = 0f;
         while (timer < duration)
         {
             timer += Time.deltaTime;
             // linear interpolation between two positions
-            Vector2 currentPos;
+            Vector3 currentPos;
             if (smooth)
             {   
-                currentPos = Vector2.Lerp(startPos, endPos, Mathf.SmoothStep(0f, 1f, timer / duration));
+                currentPos = Vector3.Lerp(startPos, endPos, Mathf.SmoothStep(0f, 1f, timer / duration));
             }   
             else
             {
-                currentPos = Vector2.Lerp(startPos, endPos, timer / duration);
+                currentPos = Vector3.Lerp(startPos, endPos, timer / duration);
             }
             
             // use local pos if indicated
             if (local)
             {
-                this.transform.localPosition = new Vector3(currentPos.x, currentPos.y, 0f);
+                this.transform.localPosition = new Vector3(currentPos.x, currentPos.y, currentPos.z);
             }
             else
             {
-                this.transform.position = new Vector3(currentPos.x, currentPos.y, 0f);
+                this.transform.position = new Vector3(currentPos.x, currentPos.y, currentPos.z);
             }
             
             yield return null;
@@ -426,11 +425,11 @@ public class MyObject : MonoBehaviour
         // set target position
         if (local)
         {
-            this.transform.localPosition = new Vector3(endPos.x, endPos.y, 0f);
+            this.transform.localPosition = new Vector3(endPos.x, endPos.y, endPos.z);
         }
         else
         {
-            this.transform.position = new Vector3(endPos.x, endPos.y, 0f);
+            this.transform.position = new Vector3(endPos.x, endPos.y, endPos.z);
         }
     }  
 
