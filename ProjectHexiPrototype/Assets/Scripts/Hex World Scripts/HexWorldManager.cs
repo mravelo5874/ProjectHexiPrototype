@@ -112,6 +112,13 @@ public class HexWorldManager : BaseSceneManager
             }
         }
         // TODO: remove other ineligible cells 
+        foreach (HexCell hex_cell in eligible_hex_cells)
+        {
+            if (hex_cell.GetHexType() == HexType.Mountain)
+            {
+                hex_cells_to_remove.Add(hex_cell);
+            }
+        }
         // remove cells
         foreach (HexCell hex_cell in hex_cells_to_remove)
         {
@@ -291,9 +298,13 @@ public class HexWorldManager : BaseSceneManager
         {
             if (hex_cell != null)
             {
+                // skip cell if not passable
+                if (!hex_cell.GetHexPassable())
+                {
+                    continue;
+                }
+
                 Color outline_color = Color.white;
-                // TODO: only show outline iff hex cell is accessible
-                
                 // check if hex cell contains enemy
                 foreach (HexEntity enemy in hex_enemies)
                 {

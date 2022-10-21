@@ -11,8 +11,16 @@ public static class HexMetrics
     public const float INNER_RADIUS_MULT = 2f;
     public const float OUTER_RADIUS_MULT = 1.5f;
 
-    public const float SOLID_FACTOR = 0.75f;
+    public const float SOLID_FACTOR = 0.8f;
     public const float BLEND_FACTOR = 1f - SOLID_FACTOR;
+
+    public const float ELEVATION_STEP = 2f;
+    public const float MOUNTAIN_HEIGHT = 5f;
+
+    public static Texture2D NOISE_SOURCE;
+    public const float NOISE_SCALE = 0.003f;
+    public const float PERTURB_STRENGTH = 4f;
+    public const float PERTURB_STRENGTH_ELEVATION = 1.5f;
 
     public static Vector3[] hex_corners = 
     {
@@ -40,16 +48,6 @@ public static class HexMetrics
         return center + hex_inner_points[(int)dir];
     }
 
-    public static Vector3 GetFirstCorner(HexDirection dir)
-    {
-        return hex_corners[(int)dir];
-    }
-
-    public static Vector3 GetSecondCorner(HexDirection dir)
-    {
-        return hex_corners[(int)dir + 1];
-    }
-
     // ordered in clock-wise order starting from HexDirection.N cell
     public static List<Vector3> GetNeighborPositions(Vector3 cell_pos)
     {
@@ -74,6 +72,16 @@ public static class HexMetrics
         neighbor_coords.Add(new Vector3Int(cell_coords.x - 1, cell_coords.y, cell_coords.z + 1));
         neighbor_coords.Add(new Vector3Int(cell_coords.x - 1, cell_coords.y - 1, cell_coords.z));
         return neighbor_coords;
+    }
+
+    public static Vector3 GetFirstCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir];
+    }
+
+    public static Vector3 GetSecondCorner(HexDirection dir)
+    {
+        return hex_corners[(int)dir + 1];
     }
 
     public static Vector3 GetFirstSolidCorner(HexDirection dir)
@@ -104,5 +112,13 @@ public static class HexMetrics
         }
         // default return value incase hex cells are not neighbors
         return HexDirection.N;
+    }
+
+    public static Vector4 SampleNoise(Vector3 position)
+    {
+        return NOISE_SOURCE.GetPixelBilinear(
+            position.x * NOISE_SCALE, 
+            position.z * NOISE_SCALE
+        );
     }
 }

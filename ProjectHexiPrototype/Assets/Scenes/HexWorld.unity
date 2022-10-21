@@ -170,7 +170,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid_radius: 5
   hex_cell_prefab: {fileID: 3281902064663685719, guid: 2e57210ae0284b94cbecc358c672c985, type: 3}
-  default_color: {r: 0.26980242, g: 0.4056604, b: 0.33043215, a: 1}
+  noise_source: {fileID: 2800000, guid: 0429514f60d59cb488f62f4a4f21d371, type: 3}
+  elevation_0_color: {r: 0.44926718, g: 0.5377358, b: 0.31198823, a: 1}
+  elevation_1_color: {r: 0.34607893, g: 0.4528302, b: 0.26699895, a: 1}
+  elevation_2_color: {r: 0.17937028, g: 0.2924528, b: 0.08966714, a: 1}
+  elevation_3_color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &319137793
 GameObject:
   m_ObjectHideFlags: 0

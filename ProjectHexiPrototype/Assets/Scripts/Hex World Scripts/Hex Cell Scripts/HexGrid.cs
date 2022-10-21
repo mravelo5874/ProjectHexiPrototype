@@ -7,19 +7,32 @@ public class HexGrid : MonoBehaviour
     public int grid_radius = 4;
     public HexCell hex_cell_prefab;
 
-    [Header("Color")]
-    public Color default_color = Color.white;
+    public Texture2D noise_source;
+
+    [Header("Colors")]
+    public Color elevation_0_color;
+    public Color elevation_1_color;
+    public Color elevation_2_color;
+    public Color elevation_3_color;
 
     // private vars
     private HexMesh hex_mesh;
     private List<HexCell> cells;
     public List<HexCell> GetHexCells() { return cells; }
-    private List<HexCell> current_Layer_cells;
+    private List<HexCell> current_layer_cells;
 
     void Awake()
     {
+        // set hex metrics noise source
+        HexMetrics.NOISE_SOURCE = noise_source;
         hex_mesh = GetComponentInChildren<HexMesh>();
     }
+
+    void OnEnable () 
+    {
+		// set hex metrics noise source
+        HexMetrics.NOISE_SOURCE = noise_source;
+	}
 
     void Update()
     {
@@ -50,17 +63,16 @@ public class HexGrid : MonoBehaviour
 
     private void TouchCell(HexCell cell)
     {
-        // float r = Random.Range(0f, 1f);
-        // float g = Random.Range(0f, 1f);
-        // float b = Random.Range(0f, 1f);
-        // cell.color = new Color(r, g, b, 1f);
-		// hex_mesh.Triangulate(cells);
-
-        // only travel to other hex cell if not currently inside a hex cell 
-        if (!HexWorldManager.instance.GetInsideHexCell())
+        // only travel to other hex cell if not currently inside a hex cell AND if cell is passable
+        if (!HexWorldManager.instance.GetInsideHexCell() && cell.GetHexPassable())
         {
             HexWorldManager.instance.player.GoToHexCell(cell);
         }
+    }
+
+    public void Refresh()
+    {
+        hex_mesh.Triangulate(cells);
     }
 
     public void CreateGrid()
@@ -71,25 +83,27 @@ public class HexGrid : MonoBehaviour
     {
         // init lists
         cells = new List<HexCell>();
-        current_Layer_cells = new List<HexCell>();
+        current_layer_cells = new List<HexCell>();
         // create grid layer by layer
         for (int layer = 0; layer < grid_radius; layer++)
         {
-            CreateLayerRoutine(current_Layer_cells, layer);
+            CreateLayerRoutine(current_layer_cells, layer);
         }
-        // create mesh
-        hex_mesh.Triangulate(cells);
+        // create outer layer of in-passable cells
+        CreateLayerRoutine(current_layer_cells, grid_radius, true);
+        // refresh mesh
+       Refresh();
     }
 
-    public void CreateLayerRoutine(List<HexCell> prev_layer, int layer_index)
+    public void CreateLayerRoutine(List<HexCell> prev_layer, int layer_index, bool outer_layer = false)
     {
-        current_Layer_cells = new List<HexCell>();
+        current_layer_cells = new List<HexCell>();
         // layer should be empty if layer = 0
         if (prev_layer.Count == 0)
         {
             // create first cell at origin
             HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0), 0);
-            current_Layer_cells.Add(new_cell);
+            current_layer_cells.Add(new_cell);
             cells.Add(new_cell);
         }
         // else: create cells at each neighbor of each prev cell if no cell exists
@@ -118,7 +132,7 @@ public class HexGrid : MonoBehaviour
                 }
 
                 // add new cells to current layer list
-                current_Layer_cells.AddRange(created_cells);
+                current_layer_cells.AddRange(created_cells);
             }
         }
     }
@@ -135,10 +149,16 @@ public class HexGrid : MonoBehaviour
         cell.SetHexCoordinates(coords);
         cell.SetHexLayer(layer);
         // determine cell hex type
-        HexType type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Camp + 1);
+        HexType type = HexType.None;
+        if (layer == grid_radius)
+        {
+            type = HexType.Mountain;
+        }
+        else
+        {
+            type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Camp + 1);
+        }
         cell.SetHexType(type, true);
-        // set hex options
-        cell.color = default_color;
         // set neighbors
         List<Vector3Int> neighbor_coords = HexMetrics.GetNeighborCoordinates(coords);
         for (int i = 0; i < 6; i ++)

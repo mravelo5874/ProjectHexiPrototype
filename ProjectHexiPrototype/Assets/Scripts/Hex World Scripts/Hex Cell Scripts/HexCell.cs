@@ -30,10 +30,44 @@ public class HexCell : MonoBehaviour
     public MyObject hex_outline;
 
     // private vars
+    private bool hex_outline_active = false;
+
+    // hex position
+    public Vector3 Position
+    {
+        get
+        {
+            return transform.localPosition;
+        }
+    }
+
+    // hex elevation
+    public int Elevation 
+    {
+		get 
+        {
+			return elevation;
+		}
+		set
+        {
+			elevation = value;
+            Vector3 pos = transform.localPosition;
+            pos.y = value * HexMetrics.ELEVATION_STEP;
+            pos.y += (HexMetrics.SampleNoise(pos).y * 2f - 1f) * HexMetrics.PERTURB_STRENGTH_ELEVATION;
+            transform.localPosition = pos;
+		}
+	}
+	private int elevation;
+
+    private bool passable = true; // can player travel to this hex cell?
+    public bool GetHexPassable() { return passable; } // public getter
+
+    // hex layer
     private int hex_layer; // layer is distance away from center (0, 0, 0)
     public void SetHexLayer(int layer) { hex_layer = layer; } // public setter
     public int GetHexLayer() { return hex_layer; } // public layer
-    private bool hex_outline_active = false;
+
+    // hex neighbors
     private HexCell[] neighbors;
     public List<HexCell> GetNeighbors() { return new List<HexCell>(neighbors); }
     public HexCell GetNeighbor(HexDirection dir) { return neighbors[(int)dir]; } // public getter
@@ -43,6 +77,7 @@ public class HexCell : MonoBehaviour
         cell.neighbors[(int)dir.Opposite()] = this;
     }
 
+    // hex coordinates
     private Vector3Int hex_coordinates;
     public Vector3Int GetHexCoordinates() { return hex_coordinates; } // public getter
     public void SetHexCoordinates(Vector3Int coords, bool set_text = false) // public setter
@@ -54,7 +89,9 @@ public class HexCell : MonoBehaviour
         }
     }
 
+    // hex type
     private HexType hex_type;
+    public HexType GetHexType() { return hex_type; } // public getter
     public void SetHexType(HexType type, bool set_text = false) // public setter
     {
         hex_type = type;
@@ -64,8 +101,54 @@ public class HexCell : MonoBehaviour
         }
         SetHexOptions(type.GetHexOptions());
         // TODO: update cell visuals
+        // set hex passable
+        if (hex_type == HexType.Mountain)
+        {
+            passable = false;
+        }
+
+        // set hex elevation
+        switch (hex_type)
+        {
+            default:
+            case HexType.None:
+            case HexType.Plain:
+            case HexType.Pond:
+                Elevation = 0;
+                break;
+            case HexType.Forest:
+            case HexType.Village:
+            case HexType.Chest:
+                Elevation = Random.Range(0, 2);
+                break;
+            case HexType.Quarry:
+            case HexType.Castle:
+            case HexType.Camp:
+                Elevation = Random.Range(1, 3);
+                break;
+            case HexType.Mountain:
+                Elevation = 3;
+                break;
+        }
+        // set hex color
+        switch (Elevation)
+        {
+            case 0:
+                color = HexWorldManager.instance.hex_grid.elevation_0_color;
+                break;
+            case 1:
+                color = HexWorldManager.instance.hex_grid.elevation_1_color;
+                break;
+            case 2:
+                color = HexWorldManager.instance.hex_grid.elevation_2_color;
+                break;
+            case 3:
+                color = HexWorldManager.instance.hex_grid.elevation_3_color;
+                break;
+        }
     }
 
+    // hex options
     private List<HexOption> hex_options;
     public List<HexOption> GetHexOptions() { return hex_options; } // public getter
     private void SetHexOptions(List<HexOption> options) // public setter
