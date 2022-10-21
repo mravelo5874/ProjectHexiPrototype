@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class TestSceneManager : MonoBehaviour
+public class CombatSceneManager : BaseSceneManager
 {
+    public override void Awake()
+    {
+        base.Awake(); // call base awake
+    }
+
     void Start()
     {
         // init set player's deck
@@ -17,20 +21,5 @@ public class TestSceneManager : MonoBehaviour
         EnemyManager.instance.ResetEnemies();
         // start combat
         CombatManager.instance.StartCombat();
-    }
-
-    public void DrawCard()
-    {
-        CardManager.instance.DrawCard();
-    }
-
-    public void AddEnergy()
-    {
-        CardManager.instance.AddEnergy();
-    }
-
-    public void SpawnEnemy()
-    {
-        // EnemyManager.instance.SpawnEnemy(CombatManager.instance.skeleton_enemy);
     }
 }

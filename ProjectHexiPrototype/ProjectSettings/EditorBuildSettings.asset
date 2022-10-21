@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/HexWorld.unity
+    guid: adee476be1adcfa48aca72e8e30179d8
+  - enabled: 1
+    path: Assets/Scenes/CombatScene.unity
+    guid: e124dec02776fc04c8353561dcc73b30
   m_configObjects: {}

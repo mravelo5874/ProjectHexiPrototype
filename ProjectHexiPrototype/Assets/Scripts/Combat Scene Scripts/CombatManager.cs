@@ -23,9 +23,6 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-
-    // TODO: get enemy data from hex map stuff
-    public EnemyData skeleton_enemy;
     public int enemy_count = 3;
 
     // private vars
@@ -46,12 +43,14 @@ public class CombatManager : MonoBehaviour
     }
     private IEnumerator StartCombatRoutine()
     {
+        List<EnemyData> enemy_data = new List<EnemyData>();
+        enemy_data.AddRange(GameManager.instance.GetEnemyData());
         // wait for start delay
         yield return new WaitForSeconds(START_DELAY);
         // spawn enemy(ies)
-        for (int i = 0; i < enemy_count; i++)
+        for (int i = 0; i < enemy_data.Count; i++)
         {
-            EnemyManager.instance.SpawnEnemy(skeleton_enemy);
+            EnemyManager.instance.SpawnEnemy(enemy_data[i]);
             yield return new WaitForSeconds(ENEMY_SPAWN_DELAY);
         }
         // reset draw and discard piles
@@ -90,8 +89,9 @@ public class CombatManager : MonoBehaviour
         yield return new WaitForSeconds(END_COMBAT_DELAY);
         // discard player hand
         StartCoroutine(DiscardEntireHandRoutine());
-        // TODO: Do something here once combat is over
-        Debug.Log("COMBAT OVER!");
+        // TODO: after combat stuff (add new cards, award gold, etc.)
+        yield return new WaitForSeconds(END_COMBAT_DELAY);
+        GameManager.instance.ReturnToHexMap();
     }   
 
     //// ******** START PLAYER TURN ******** ////

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class HexWorldManager : MonoBehaviour
+public class HexWorldManager : BaseSceneManager
 {
     public static int DEFAULT_WORLD_ENERGY = 30;
     public static float START_DELAY_AMOUNT = 0.5f;
 
     public static HexWorldManager instance;
     // set this hex world manager to be the only instance
-    void Awake() 
+    public override void Awake()
     {
+        base.Awake(); // call base awake
         if (!instance)
         {
             instance = this;
@@ -199,9 +200,9 @@ public class HexWorldManager : MonoBehaviour
                 // zoom camera on hex cell
                 HexCameraController.instance.SetFollowTarget(cell.transform);
                 HexCameraController.instance.SetInsideHexCellFocus();
-                // TODO: begin enemy fight - for now just return from combat
+                // begin enemy fight
                 yield return new WaitForSeconds(1f);
-                ReturnFromCombat();
+                GameManager.instance.StartCombat(AISystem.instance.DetermineEnemies());
                 yield break;
             }
         }
