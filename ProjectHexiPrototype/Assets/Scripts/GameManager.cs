@@ -17,6 +17,8 @@ public class GameManager : Singleton<GameManager>
     public bool allow_player_input = false;
     public GameObject default_scene_transition;
     
+    private HexWorldData hex_world_data;
+    public HexWorldData GetHexWorldData() { return hex_world_data; } // public getter
 
     private List<EnemyData> current_enemy_data;
     public List<EnemyData> GetEnemyData() { return current_enemy_data; } // public getter

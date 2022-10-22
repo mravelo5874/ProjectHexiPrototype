@@ -28,7 +28,7 @@ public class HexGrid : MonoBehaviour
         hex_mesh = GetComponentInChildren<HexMesh>();
     }
 
-    void OnEnable () 
+    void OnEnable()
     {
 		// set hex metrics noise source
         HexMetrics.NOISE_SOURCE = noise_source;
@@ -73,6 +73,11 @@ public class HexGrid : MonoBehaviour
     public void Refresh()
     {
         hex_mesh.Triangulate(cells);
+    }
+
+    public void LoadGrid(HexCell[] hex_cells, int world_radius)
+    {
+        
     }
 
     public void CreateGrid()

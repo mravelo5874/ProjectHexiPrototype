@@ -50,22 +50,38 @@ public class HexWorldManager : BaseSceneManager
 
     void Start()
     {
+        // determine if loading hex data or creating new hex world
+        HexWorldData data = GameManager.instance.GetHexWorldData();
+        if (data == null)
+        {
+            // create new hex world
+            hex_grid.CreateGrid();
+            // spawn enemies
+            SpawnEnemies();
+            // set player position
+            player.SetStartHexCell(hex_grid.GetHexCellFromCoordinates(Vector3Int.zero));
+            // set world energy
+            max_world_energy = DEFAULT_WORLD_ENERGY;
+            current_world_energy = DEFAULT_WORLD_ENERGY;
+        }
+        else // TODO this
+        {
+            // load hex world data
+            hex_grid.LoadGrid(data.hex_cells, data.world_radius);
+            // load in enemies
+            LoadEnemies(data.enemies);
+            // load in player
+            player.SetStartHexCell(data.player.GetCurrentHexCell());
+            // set world energy
+            max_world_energy = DEFAULT_WORLD_ENERGY;
+            current_world_energy = data.world_energy;
+        }
         // init options list
         current_hex_option_prefabs = new List<HexOptionPrefab>();
-        // create grid
-        hex_grid.CreateGrid();
-        // spawn enemies
-        SpawnEnemies();
-        // set player position
-        player.SetStartHexCell(hex_grid.GetHexCellFromCoordinates(Vector3Int.zero));
-        // set world energy
-        max_world_energy = DEFAULT_WORLD_ENERGY;
-        current_world_energy = DEFAULT_WORLD_ENERGY;
         // hide cell button
         hex_cell_button.transform.localScale = Vector3.zero;
         // set texts
         world_energy_text.text = "";
-
         // start after delay
         StartCoroutine(StartDelay(START_DELAY_AMOUNT));
     }
@@ -95,6 +111,11 @@ public class HexWorldManager : BaseSceneManager
         {
             hex_cell_button_text.SetTextMeshText("Enter Hex Cell");
         }
+    }
+
+    private void LoadEnemies(HexEntity[] enemies)
+    {
+
     }
 
     private void SpawnEnemies()
