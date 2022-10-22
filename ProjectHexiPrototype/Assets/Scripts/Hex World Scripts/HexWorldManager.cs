@@ -91,7 +91,7 @@ public class HexWorldManager : BaseSceneManager
         yield return new WaitForSeconds(delay_amount);
         // set current hex options
         SetHexOptions(hex_grid.GetHexCellFromCoordinates(Vector3Int.zero));
-        ShowAvailableAdjacentHexCellOutlines(hex_grid.GetHexCellFromCoordinates(Vector3Int.zero));
+        EnterHexCell();
         // allow player input
         GameManager.instance.allow_player_input = true;
         UpdateUI();
@@ -111,6 +111,18 @@ public class HexWorldManager : BaseSceneManager
         {
             hex_cell_button_text.SetTextMeshText("Enter Hex Cell");
         }
+    }
+
+    public bool EnemyInCell(HexCell hex_cell)
+    {
+        foreach (HexEntity enemy_entity in hex_enemies)
+        {
+            if (enemy_entity.GetCurrentHexCell().GetHexCoordinates() == hex_cell.GetHexCoordinates())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void LoadEnemies(HexEntity[] enemies)
@@ -288,6 +300,7 @@ public class HexWorldManager : BaseSceneManager
 
     public void EnterHexCell()
     {
+        
         inside_hex_cell = true;
         // zoom camera on player
         HexCameraController.instance.SetInsideHexCellFocus();
@@ -308,6 +321,8 @@ public class HexWorldManager : BaseSceneManager
         {
             option.my_object.ChangeScale(0f, HexOptionPrefab.OPTION_REVEAL_DURATION);
         }
+        // show available adjacent hex cells
+        ShowAvailableAdjacentHexCellOutlines(player.GetCurrentHexCell());
     }
 
     public void ShowAvailableAdjacentHexCellOutlines(HexCell cell)
@@ -326,6 +341,15 @@ public class HexWorldManager : BaseSceneManager
                 }
 
                 Color outline_color = Color.white;
+                // check if hex cell is discarded
+                if (hex_cell.Discarded)
+                {
+                    outline_color = Color.black;
+                }
+                else
+                {
+                    outline_color = Color.cyan;
+                }
                 // check if hex cell contains enemy
                 foreach (HexEntity enemy in hex_enemies)
                 {

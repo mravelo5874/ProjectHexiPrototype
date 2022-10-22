@@ -14,13 +14,13 @@ public static class HexMetrics
     public const float SOLID_FACTOR = 0.8f;
     public const float BLEND_FACTOR = 1f - SOLID_FACTOR;
 
-    public const float ELEVATION_STEP = 2f;
+    public const float ELEVATION_STEP = 1.5f;
     public const float MOUNTAIN_HEIGHT = 5f;
 
     public static Texture2D NOISE_SOURCE;
     public const float NOISE_SCALE = 0.003f;
     public const float PERTURB_STRENGTH = 4f;
-    public const float PERTURB_STRENGTH_ELEVATION = 1.5f;
+    public const float PERTURB_STRENGTH_ELEVATION = 0.75f;
 
     public static Vector3[] hex_corners = 
     {

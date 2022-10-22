@@ -14,6 +14,7 @@ public class HexOption
     public enum OptionType
     {
         None, // default option
+        StartHex, // starting hex cell tile
         
         // NATURE TILES
         CutDownTree, // only on forest tiles

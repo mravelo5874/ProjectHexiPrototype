@@ -108,6 +108,7 @@ public class HexGrid : MonoBehaviour
         {
             // create first cell at origin
             HexCell new_cell = CreateCell(0f, 0f, new Vector3Int(0, 0, 0), 0);
+            new_cell.SetHexType(HexType.Init, true);
             current_layer_cells.Add(new_cell);
             cells.Add(new_cell);
         }

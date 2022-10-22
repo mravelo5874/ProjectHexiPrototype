@@ -28,7 +28,6 @@ public class HealthBar : MonoBehaviour
 
     public void ShowBar()
     {
-        print ("show bar");
         health_bar_object.SquishyChangeScale(1.1f, 1f, 0.1f, 0.1f);
     }
 

@@ -12,7 +12,7 @@ public class HexCell : MonoBehaviour
     void Awake()
     {
         // reset hex text
-        hex_text.text = "";
+        hex_text.SetTextMeshText("");
         // create neighbor array
         neighbors = new HexCell[6];
 
@@ -26,7 +26,7 @@ public class HexCell : MonoBehaviour
     }
     
     public Color color;
-    public TextMeshProUGUI hex_text;
+    public MyObject hex_text;
     public MyObject hex_outline;
 
     // private vars
@@ -59,6 +59,20 @@ public class HexCell : MonoBehaviour
 	}
 	private int elevation;
 
+    public bool Discarded
+    {
+        get
+        {
+            return discarded;
+        }
+        set
+        {
+            discarded = value;
+            hex_text.SetTextMeshText("");
+        }
+    }
+    private bool discarded;
+
     private bool passable = true; // can player travel to this hex cell?
     public bool GetHexPassable() { return passable; } // public getter
 
@@ -85,7 +99,7 @@ public class HexCell : MonoBehaviour
         hex_coordinates = coords;
         if (set_text)
         {
-            hex_text.text = hex_coordinates.ToString();
+            hex_text.SetTextMeshText(hex_coordinates.ToString());
         }
     }
 
@@ -97,7 +111,7 @@ public class HexCell : MonoBehaviour
         hex_type = type;
         if (set_text)
         {
-            hex_text.text = hex_type.ToString();
+            hex_text.SetTextMeshText(hex_type.ToString());
         }
         SetHexOptions(type.GetHexOptions());
         // TODO: update cell visuals
@@ -114,6 +128,7 @@ public class HexCell : MonoBehaviour
             case HexType.None:
             case HexType.Plain:
             case HexType.Pond:
+            case HexType.Init:
                 Elevation = 0;
                 break;
             case HexType.Forest:

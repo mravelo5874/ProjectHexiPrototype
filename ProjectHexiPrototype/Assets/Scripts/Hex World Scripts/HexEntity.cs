@@ -56,11 +56,16 @@ public class HexEntity : MonoBehaviour
         HexWorldManager.instance.ClearAdjacentHexCellOutlines(current_cell); // clear hex cell outlines
         HexWorldManager.instance.ClearHexOptions(); // clear current cell hex options
         HexWorldManager.instance.MovePlayerToHexCell(cell, HexMetrics.GetDirectionBetweenHexCells(current_cell, cell));
+        current_cell.Discarded = true; // discard current hex cell
         current_cell = cell; // set new target hex cell
         yield return new WaitForSeconds(ENTITY_MOVE_DURATION);
         HexWorldManager.instance.ConsumeWorldEnergy(); // consume one world energy
         HexWorldManager.instance.SetHexOptions(cell); // set current cell hex options
-        HexWorldManager.instance.ShowAvailableAdjacentHexCellOutlines(cell); // show new hex cell outlines
+        if (!HexWorldManager.instance.EnemyInCell(cell)) // only enter cell if enemy is not present
+        {
+            HexWorldManager.instance.EnterHexCell();
+        }
+        HexWorldManager.instance.UpdateUI();
         can_move = true;
     }
 

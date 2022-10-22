@@ -4,8 +4,9 @@ using UnityEngine;
 
 public enum HexType
 {
-    // default tile type on init
+    // default tile types
     None,
+    Init,
 
     // NATURE TILES
     Plain,
@@ -32,6 +33,9 @@ public static class HexTypeExtensions
         {
             default:
             case HexType.None:
+                break;
+            case HexType.Init:
+                options.Add(new HexOption(HexOption.OptionType.StartHex, 1, 0));
                 break;
             case HexType.Plain:
                 break;
