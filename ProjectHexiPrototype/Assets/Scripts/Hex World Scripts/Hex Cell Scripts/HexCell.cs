@@ -32,6 +32,15 @@ public class HexCell : MonoBehaviour
     // private vars
     private bool hex_outline_active = false;
 
+    // copy cell into this hex cell
+    public void Copy(HexCell cell)
+    {
+        SetHexType(cell.GetHexType(), true);
+        SetHexOptions(cell.GetHexOptions());
+        Elevation = cell.Elevation;
+        Discarded = cell.Discarded;
+    }
+
     // hex position
     public Vector3 Position
     {
@@ -68,7 +77,12 @@ public class HexCell : MonoBehaviour
         set
         {
             discarded = value;
-            hex_text.SetTextMeshText("");
+            if (discarded)
+            {
+                // clear hex options
+                hex_options.Clear();
+                hex_text.SetTextMeshText("");
+            }
         }
     }
     private bool discarded;
@@ -116,6 +130,7 @@ public class HexCell : MonoBehaviour
         SetHexOptions(type.GetHexOptions());
         // TODO: update cell visuals
         // set hex passable
+        passable = true;
         if (hex_type == HexType.Mountain)
         {
             passable = false;
@@ -166,7 +181,7 @@ public class HexCell : MonoBehaviour
     // hex options
     private List<HexOption> hex_options;
     public List<HexOption> GetHexOptions() { return hex_options; } // public getter
-    private void SetHexOptions(List<HexOption> options) // public setter
+    public void SetHexOptions(List<HexOption> options) // public setter
     {   
         hex_options = new List<HexOption>();
         hex_options.AddRange(options);

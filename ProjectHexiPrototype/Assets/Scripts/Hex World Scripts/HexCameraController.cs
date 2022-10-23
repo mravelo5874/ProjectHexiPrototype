@@ -40,6 +40,12 @@ public class HexCameraController : MonoBehaviour
         }
     }
 
+    // camera instantly moves to target position
+    public void GoToTargetInstant()
+    {
+        transform.position = target.position;
+    }
+
     public void SetFollowTarget(Transform new_target)
     {
         target = new_target;

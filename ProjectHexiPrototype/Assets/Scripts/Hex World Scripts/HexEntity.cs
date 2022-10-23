@@ -61,9 +61,13 @@ public class HexEntity : MonoBehaviour
         yield return new WaitForSeconds(ENTITY_MOVE_DURATION);
         HexWorldManager.instance.ConsumeWorldEnergy(); // consume one world energy
         HexWorldManager.instance.SetHexOptions(cell); // set current cell hex options
-        if (!HexWorldManager.instance.EnemyInCell(cell)) // only enter cell if enemy is not present
+        if (!HexWorldManager.instance.EnemyInCell(cell) && !cell.Discarded) // only enter cell if enemy is not present and cell is not discarded
         {
             HexWorldManager.instance.EnterHexCell();
+        }
+        else if (!HexWorldManager.instance.EnemyInCell(cell)) // else show available adjacent outlines
+        {
+            HexWorldManager.instance.ShowAvailableAdjacentHexCellOutlines(cell);
         }
         HexWorldManager.instance.UpdateUI();
         can_move = true;

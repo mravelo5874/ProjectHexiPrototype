@@ -19,7 +19,6 @@ public class AISystem : MonoBehaviour
     {
         List<EnemyData> enemy_data = new List<EnemyData>();
         enemy_data.Add(skeleton_data);
-        enemy_data.Add(skeleton_data);
         return enemy_data;
     }
 }

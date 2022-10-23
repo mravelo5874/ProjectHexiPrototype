@@ -19,6 +19,10 @@ public class GameManager : Singleton<GameManager>
     
     private HexWorldData hex_world_data;
     public HexWorldData GetHexWorldData() { return hex_world_data; } // public getter
+    public void SaveHexWorldData(HexWorldData data)
+    {
+        hex_world_data = data;
+    }
 
     private List<EnemyData> current_enemy_data;
     public List<EnemyData> GetEnemyData() { return current_enemy_data; } // public getter

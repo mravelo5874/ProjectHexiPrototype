@@ -77,14 +77,30 @@ public class HexGrid : MonoBehaviour
 
     public void LoadGrid(HexCell[] hex_cells, int world_radius)
     {
-        
+        // create grid at appropriate radius
+        grid_radius = world_radius;
+        CreateGrid();
+        // load each cell
+        foreach (HexCell hex_cell in hex_cells)
+        {
+            LoadCell(hex_cell);
+        }
+        // refresh mesh
+        Refresh();
+    }
+
+    private void LoadCell(HexCell hex_cell_to_load)
+    {
+        foreach (HexCell hex_cell in cells)
+        {
+            if (hex_cell.GetHexCoordinates() == hex_cell_to_load.GetHexCoordinates())
+            {
+                hex_cell.Copy(hex_cell_to_load);
+            }
+        }
     }
 
     public void CreateGrid()
-    {
-        CreateGridRoutine();
-    }
-    private void CreateGridRoutine()
     {
         // init lists
         cells = new List<HexCell>();
