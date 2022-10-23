@@ -33,11 +33,6 @@ public class HexOptionPrefab : MonoBehaviour
         // create option string
         string option_string = "[" + my_index.ToString() + "]\t";
         option_string += my_option.GetText();
-        // only show charges if not equal to -1
-        if (my_option.charges != -1)
-        {
-            option_string += " (x" + my_option.charges + ") ";
-        }
         // only show cost if greater than 0
         if (my_option.cost > 0)
         {
@@ -47,16 +42,14 @@ public class HexOptionPrefab : MonoBehaviour
         // set text
         option_text.text = option_string;
         
-        // TODO: change option based on availability of option
-        if (my_option.charges > 0 || my_option.charges == -1)
+        // change option based on availability of option
+        if (!my_option.used)
         {
             my_object.ChangeImageAlpha(0.5f, OPTION_REVEAL_DURATION);
-            //option_text.GetComponent<MyObject>().SetTextMeshAlpha(1f);
         }
-        else if (my_option.charges == 0)
+        else
         {
             my_object.ChangeImageAlpha(0.25f, OPTION_REVEAL_DURATION);
-            //option_text.GetComponent<MyObject>().SetTextMeshAlpha(0.5f);
         }
     }
 
@@ -74,12 +67,11 @@ public class HexOptionPrefab : MonoBehaviour
     public void OnHexOptionPressed()
     {
         // return if no charges are left
-        if (my_option.charges == 0)
+        if (my_option.used)
         {
             return;
         }
-
-        // TODO: execute option    
+        // execute option    
         my_object.SquishyChangeScale(0.9f, 1.0f, 0.1f, 0.1f);
         my_option.Execute();
         UpdateString();

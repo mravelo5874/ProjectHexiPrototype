@@ -35,33 +35,37 @@ public static class HexTypeExtensions
             case HexType.None:
                 break;
             case HexType.Init:
-                options.Add(new HexOption(HexOption.OptionType.StartHex, 1, 0));
+                options.Add(new HexOption(HexOption.OptionType.StartHex, 0));
                 break;
             case HexType.Plain:
                 break;
             case HexType.Forest:
-                options.Add(new HexOption(HexOption.OptionType.CutDownTree, 3, 1));
+                options.Add(new HexOption(HexOption.OptionType.CutDownTree, 1));
+                options.Add(new HexOption(HexOption.OptionType.CutDownTree, 1));
+                options.Add(new HexOption(HexOption.OptionType.CutDownTree, 1));
                 break;
             case HexType.Pond:
-                options.Add(new HexOption(HexOption.OptionType.FishForFish, 1, 2));
+                options.Add(new HexOption(HexOption.OptionType.FishForFish, 2));
                 break;
             case HexType.Mountain:
                 break;
             case HexType.Village:
-                options.Add(new HexOption(HexOption.OptionType.UpgradeCard, 3, 2));
-                options.Add(new HexOption(HexOption.OptionType.EnterShop, -1, 0));
+                options.Add(new HexOption(HexOption.OptionType.UpgradeCard, 2));
+                options.Add(new HexOption(HexOption.OptionType.EnterShop, 0));
                 break;
             case HexType.Quarry:
-                options.Add(new HexOption(HexOption.OptionType.MineForLoot, 3, 1));
+                options.Add(new HexOption(HexOption.OptionType.MineForLoot, 1));
+                options.Add(new HexOption(HexOption.OptionType.MineForLoot, 1));
+                options.Add(new HexOption(HexOption.OptionType.MineForLoot, 1));
                 break;
             case HexType.Chest:
-                options.Add(new HexOption(HexOption.OptionType.CollectLoot, 1, 0));
+                options.Add(new HexOption(HexOption.OptionType.CollectLoot, 0));
                 break;
             case HexType.Castle:
-                options.Add(new HexOption(HexOption.OptionType.EnterCastle, 1, 0));
+                options.Add(new HexOption(HexOption.OptionType.EnterCastle, 0));
                 break;
             case HexType.Camp:
-                options.Add(new HexOption(HexOption.OptionType.EnterCamp, 1, 0));
+                options.Add(new HexOption(HexOption.OptionType.EnterCamp, 0));
                 break;
         }
         return options;

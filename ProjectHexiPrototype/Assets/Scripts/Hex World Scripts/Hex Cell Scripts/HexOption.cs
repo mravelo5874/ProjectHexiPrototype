@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class HexOption
 {
-    public HexOption(OptionType _option, int _charges, int _cost) // constructor
+    public HexOption(OptionType _option, int _cost) // constructor
     {   
         this.option_type = _option;
-        this.charges = _charges;
         this.cost = _cost;
     }
 
@@ -33,7 +32,7 @@ public class HexOption
         EnterCamp, // only on camp tiles
     }
     public OptionType option_type;
-    public int charges; // how many times can player execute option (if -1, can be done infinite number of times)
+    public bool used = false; // has this option been used?
     public int cost; // how much world energy does executing this option cost?
 
     public string GetText()
@@ -45,19 +44,12 @@ public class HexOption
     public void Execute()
     {
         // return if no charges are left
-        if (charges == 0)
+        if (used)
         {
             return;
         }
-
         // at what cost ?
-        // only reduce charges if not -1 (infinite)
-        if (charges != -1)
-        {
-            charges--;
-        }
+        used = true;
         HexWorldManager.instance.ConsumeWorldEnergy(cost);
-        
-        // TODO: execute option
     }
 }
