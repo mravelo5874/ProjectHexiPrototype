@@ -36,7 +36,7 @@ public class HexOptionPrefab : MonoBehaviour
         // only show cost if greater than 0
         if (my_option.cost > 0)
         {
-            option_string += " (-" + my_option.cost + " world energy)";
+            option_string += " (-" + my_option.cost + ")";
         }
 
         // set text

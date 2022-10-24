@@ -26,6 +26,22 @@ public enum HexType
 
 public static class HexTypeExtensions
 {
+    public static float GetTerrainIndex(this HexType type)
+    {
+        switch (type)
+        {
+            default:
+                return 0f;
+            case HexType.Init:
+                return 1f;
+            case HexType.Quarry:
+                return 2f;
+            case HexType.Mountain:
+                return 3f;
+        }
+        // return (float)Random.Range(0, 2);
+    }
+
     public static List<HexOption> GetHexOptions(this HexType type)
     {
         List<HexOption> options = new List<HexOption>();
