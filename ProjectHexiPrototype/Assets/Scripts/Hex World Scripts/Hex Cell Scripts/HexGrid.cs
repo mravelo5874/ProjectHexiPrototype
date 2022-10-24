@@ -9,12 +9,6 @@ public class HexGrid : MonoBehaviour
 
     public Texture2D noise_source;
 
-    [Header("Colors")]
-    public Color elevation_0_color;
-    public Color elevation_1_color;
-    public Color elevation_2_color;
-    public Color elevation_3_color;
-
     // private vars
     private HexMesh hex_mesh;
     private List<HexCell> cells;

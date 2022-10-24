@@ -25,7 +25,6 @@ public class HexCell : MonoBehaviour
         // Instantiate(HexWorldManager.instance.hex_point, HexMetrics.GetInnerPoint(transform.position, HexDirection.NW), Quaternion.identity, transform);
     }
     
-    public Color color;
     public MyObject hex_text;
     public MyObject hex_outline;
 
@@ -158,22 +157,6 @@ public class HexCell : MonoBehaviour
                 break;
             case HexType.Mountain:
                 Elevation = 3;
-                break;
-        }
-        // set hex color
-        switch (Elevation)
-        {
-            case 0:
-                color = HexWorldManager.instance.hex_grid.elevation_0_color;
-                break;
-            case 1:
-                color = HexWorldManager.instance.hex_grid.elevation_1_color;
-                break;
-            case 2:
-                color = HexWorldManager.instance.hex_grid.elevation_2_color;
-                break;
-            case 3:
-                color = HexWorldManager.instance.hex_grid.elevation_3_color;
                 break;
         }
     }
