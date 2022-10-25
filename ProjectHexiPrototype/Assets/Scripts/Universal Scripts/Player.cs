@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Entity
+public class Player : MonoBehaviour
 {
     public static Player instance;
     void Awake()
@@ -15,7 +15,6 @@ public class Player : Entity
         // init player deck
         player_deck = new List<CardData>();
     }
-
     private List<CardData> player_deck; public List<CardData> GetPlayerDeck() { return player_deck; } // public getter for player deck
     private int energy;
     private int total_energy;
@@ -26,12 +25,6 @@ public class Player : Entity
         return draw_card_amount;
     }
 
-    // override Entity Start() and call it
-    public override void Start()
-    {
-        base.Start();
-    }
-
     public void AddCardToPlayerDeck(CardData new_card)
     {
         player_deck.Add(new_card);
@@ -40,10 +33,5 @@ public class Player : Entity
     public void AddCardsToPlayerDeck(List<CardData> new_cards)
     {
         player_deck.AddRange(new_cards);
-    }
-
-    public bool PlayerDead()
-    {
-        return base.GetIsDead();
     }
 }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9198609623979186894}
   - component: {fileID: 9198609623979186881}
+  - component: {fileID: 5955937839147752261}
   - component: {fileID: 7016501202139153986}
   m_Layer: 0
   m_Name: GameManager
@@ -61,6 +62,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f6c82269336b47947a9507d5e28f91b9, type: 2}
   allow_player_input: 0
   default_scene_transition: {fileID: 8970060222708898181, guid: 76311efcb195da1408589dab099e260a, type: 3}
+--- !u!114 &5955937839147752261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9198609623979186880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4171ee0cc236ba44c83227ec6dfbb280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7016501202139153986
 MonoBehaviour:
   m_ObjectHideFlags: 0

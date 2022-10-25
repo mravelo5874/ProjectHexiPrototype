@@ -11,8 +11,6 @@ public class CombatSceneManager : BaseSceneManager
 
     void Start()
     {
-        // init set player's deck
-        Player.instance.AddCardsToPlayerDeck(GameManager.instance.default_knight_deck);
         ResetScene();
     }
 

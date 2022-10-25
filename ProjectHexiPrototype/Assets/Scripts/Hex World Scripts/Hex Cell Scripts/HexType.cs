@@ -9,19 +9,30 @@ public enum HexType
     Init,
 
     // NATURE TILES
-    Plain,
+    Field,
+    FlowerField,
     Forest,
     Pond,
+    Spring,
     Mountain,
+    Cave,
+    DesertDunes,
 
-    // FRIENDLY TILES
+    // FRIENDLY / NEUTRAL TILES
+    Farm,
     Village,
+    Peddler,
     Quarry,
-    Chest,
+    Ruins,
+    Obelisk,
+    Statue,
+    Temple,
 
     // ENEMY TILES
-    Castle,
-    Camp,
+    GoblinCamp,
+    DungeonTomb,
+    SpookySwamp,
+    FinalCastle
 }
 
 public static class HexTypeExtensions
@@ -53,7 +64,7 @@ public static class HexTypeExtensions
             case HexType.Init:
                 options.Add(new HexOption(HexOption.OptionType.StartHex, 0));
                 break;
-            case HexType.Plain:
+            case HexType.Field:
                 break;
             case HexType.Forest:
                 options.Add(new HexOption(HexOption.OptionType.CutDownTree, 1));
@@ -74,16 +85,35 @@ public static class HexTypeExtensions
                 options.Add(new HexOption(HexOption.OptionType.MineForLoot, 1));
                 options.Add(new HexOption(HexOption.OptionType.MineForLoot, 1));
                 break;
-            case HexType.Chest:
-                options.Add(new HexOption(HexOption.OptionType.CollectLoot, 0));
-                break;
-            case HexType.Castle:
+            case HexType.FinalCastle:
                 options.Add(new HexOption(HexOption.OptionType.EnterCastle, 0));
                 break;
-            case HexType.Camp:
+            case HexType.GoblinCamp:
                 options.Add(new HexOption(HexOption.OptionType.EnterCamp, 0));
                 break;
         }
         return options;
+    }
+
+    public static int GetElevation(this HexType type)
+    {
+        switch (type)
+        {
+            default:
+            case HexType.None:
+            case HexType.Field:
+            case HexType.Pond:
+            case HexType.Init:
+                return 0;
+            case HexType.Forest:
+            case HexType.Village:
+                return Random.Range(0, 2);
+            case HexType.Quarry:
+            case HexType.FinalCastle:
+            case HexType.GoblinCamp:
+                return Random.Range(1, 3);
+            case HexType.Mountain:
+                return 3;
+        }
     }
 }

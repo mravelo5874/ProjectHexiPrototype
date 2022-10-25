@@ -128,37 +128,15 @@ public class HexCell : MonoBehaviour
         }
         SetHexOptions(type.GetHexOptions());
         // TODO: update cell visuals
+
         // set hex passable
         passable = true;
         if (hex_type == HexType.Mountain)
         {
             passable = false;
         }
-
         // set hex elevation
-        switch (hex_type)
-        {
-            default:
-            case HexType.None:
-            case HexType.Plain:
-            case HexType.Pond:
-            case HexType.Init:
-                Elevation = 0;
-                break;
-            case HexType.Forest:
-            case HexType.Village:
-            case HexType.Chest:
-                Elevation = Random.Range(0, 2);
-                break;
-            case HexType.Quarry:
-            case HexType.Castle:
-            case HexType.Camp:
-                Elevation = Random.Range(1, 3);
-                break;
-            case HexType.Mountain:
-                Elevation = 3;
-                break;
-        }
+        Elevation = type.GetElevation();
     }
 
     // hex options

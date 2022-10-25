@@ -171,10 +171,6 @@ MonoBehaviour:
   grid_radius: 5
   hex_cell_prefab: {fileID: 3281902064663685719, guid: 2e57210ae0284b94cbecc358c672c985, type: 3}
   noise_source: {fileID: 2800000, guid: 0429514f60d59cb488f62f4a4f21d371, type: 3}
-  elevation_0_color: {r: 0.44926718, g: 0.5377358, b: 0.31198823, a: 1}
-  elevation_1_color: {r: 0.34607893, g: 0.4528302, b: 0.26699895, a: 1}
-  elevation_2_color: {r: 0.17937028, g: 0.2924528, b: 0.08966714, a: 1}
-  elevation_3_color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &319137793
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,6 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f6ee7c85a16c4b48b30bcaa4ac2d406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  use_terrain_types: 1
 --- !u!1 &1141986403
 GameObject:
   m_ObjectHideFlags: 0

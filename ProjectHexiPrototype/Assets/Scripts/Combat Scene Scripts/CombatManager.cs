@@ -67,7 +67,7 @@ public class CombatManager : MonoBehaviour
 
     public void CheckEndCombat()
     {
-        if (EnemyManager.instance.AllEnemiesDead() || Player.instance.PlayerDead())
+        if (EnemyManager.instance.AllEnemiesDead() || PlayerEntity.instance.PlayerDead())
         {
             EndCombat();
         }

@@ -71,7 +71,7 @@ public class Enemy : Entity
             switch (mod.modifier)
             {
                 case CardModifier.Modifier.DealDamage:
-                    Player.instance.ApplyDamage(mod.amount);
+                    PlayerEntity.instance.ApplyDamage(mod.amount);
                     break;
 
                 case CardModifier.Modifier.GainBlock:

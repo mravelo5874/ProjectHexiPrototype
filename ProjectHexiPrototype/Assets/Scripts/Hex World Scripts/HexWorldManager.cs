@@ -63,6 +63,8 @@ public class HexWorldManager : BaseSceneManager
         HexWorldData data = GameManager.instance.GetHexWorldData();
         if (data == null)
         {
+            // TODO: init set player's deck to another location
+            Player.instance.AddCardsToPlayerDeck(GameManager.instance.default_knight_deck);
             // create new hex world
             hex_grid.CreateGrid();
             // spawn enemies
@@ -212,7 +214,8 @@ public class HexWorldManager : BaseSceneManager
         // TODO: remove other ineligible cells 
         foreach (HexCell hex_cell in eligible_hex_cells)
         {
-            if (hex_cell.GetHexType() == HexType.Mountain)
+            if (hex_cell.GetHexType() == HexType.Mountain ||
+                hex_cell.GetHexType() == HexType.Village)
             {
                 hex_cells_to_remove.Add(hex_cell);
             }
@@ -223,8 +226,31 @@ public class HexWorldManager : BaseSceneManager
             eligible_hex_cells.Remove(hex_cell);
         }
 
+        // create list of required hex cells to spawn an enemy
+        List<HexCell> required_hex_cells = new List<HexCell>();
+        foreach (HexCell hex_cell in hex_grid.GetHexCells())
+        {
+            if (hex_cell.GetHexType() == HexType.GoblinCamp ||
+                hex_cell.GetHexType() == HexType.SpookySwamp ||
+                hex_cell.GetHexType() == HexType.DungeonTomb ||
+                hex_cell.GetHexType() == HexType.FinalCastle)
+            {
+                required_hex_cells.Add(hex_cell);
+            }
+        }
         // spawn enemies
         hex_enemies = new List<HexEntity>();
+        // spawn required enemies first
+        foreach (HexCell hex_cell in required_hex_cells)
+        {
+            // spawn enemy
+            HexEntity enemy_entity = Instantiate(hex_entity_enemy, world).GetComponent<HexEntity>();
+            enemy_entity.SetStartHexCell(hex_cell);
+            hex_enemies.Add(enemy_entity);
+        }
+        // subtract spawned enemies from total enemies to spawn
+        enemies_to_spawn -= required_hex_cells.Count;
+        // spawn the rest of the enemies at random cells
         for (int i = 0; i < enemies_to_spawn; i++)
         {
             // select hex cell

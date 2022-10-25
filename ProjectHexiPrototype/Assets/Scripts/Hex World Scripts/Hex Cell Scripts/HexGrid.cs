@@ -102,12 +102,44 @@ public class HexGrid : MonoBehaviour
         // create grid layer by layer
         for (int layer = 0; layer < grid_radius; layer++)
         {
+            // create layer
             CreateLayerRoutine(current_layer_cells, layer);
+            // add special hex types
+            AddSpecialHexTypes(current_layer_cells, layer);
         }
         // create outer layer of in-passable cells
         CreateLayerRoutine(current_layer_cells, grid_radius, true);
         // refresh mesh
        Refresh();
+    }
+
+    private void AddSpecialHexTypes(List<HexCell> layer_cells, int layer_index)
+    {
+        List<HexCell> current_layer_hex_cells = new List<HexCell>();
+        current_layer_hex_cells.AddRange(layer_cells);
+        List<HexType> special_hex_types = AISystem.instance.GetSpecialHexTypes(layer_index);
+        // return if list is null
+        if (special_hex_types == null)
+        {
+            return;
+        }
+        // set hex types
+        foreach (HexType special_type in special_hex_types)
+        {
+            // select random cell
+            HexCell hex_cell = current_layer_hex_cells[Random.Range(0, current_layer_hex_cells.Count)];
+            // get cell's neighbors
+            List<HexCell> neighbor_cells = new List<HexCell>();
+            neighbor_cells.AddRange(hex_cell.GetNeighbors());
+            // remove hex cell and neighbors from layer list
+            current_layer_hex_cells.Remove(hex_cell);
+            foreach (HexCell cell in neighbor_cells)
+            {
+                current_layer_hex_cells.Remove(cell);
+            }
+            // set special hex cell
+            hex_cell.SetHexType(special_type, true);
+        }
     }
 
     public void CreateLayerRoutine(List<HexCell> prev_layer, int layer_index, bool outer_layer = false)
@@ -172,7 +204,7 @@ public class HexGrid : MonoBehaviour
         }
         else
         {
-            type = (HexType)Random.Range((int)HexType.Plain, (int)HexType.Camp + 1);
+            type = AISystem.instance.DetermineHexType(layer);
         }
         cell.SetHexType(type, true);
         // set neighbors
